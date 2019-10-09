@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"asira-messaging/asira"
+	"messaging/asira"
 	"fmt"
 	"net/http"
 

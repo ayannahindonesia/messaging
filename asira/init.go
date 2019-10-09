@@ -1,7 +1,7 @@
 package asira
 
 import (
-	"asira-messaging/validator"
+	"messaging/validator"
 	"fmt"
 	"log"
 	"os"
@@ -41,7 +41,7 @@ type (
 func init() {
 	var err error
 	App = &Application{}
-	App.Name = "asira-messaging"
+	App.Name = "messaging"
 	App.Port = os.Getenv("APPPORT")
 	App.Version = os.Getenv("APPVER")
 	App.loadENV()
