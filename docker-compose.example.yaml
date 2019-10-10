@@ -4,7 +4,7 @@ services:
   messaging:
     build: .
     ports:
-      - 8010:8010
+      - 8009:8009
     image: asira_messaging:development
     volumes:
       - ./:/go/src/messaging
@@ -12,7 +12,7 @@ services:
     environment:
       - APPNAME=messaging
       - ENV=dev
-      - APPPORT=8010
+      - APPPORT=8009
     container_name: asira_messaging
     
   zookeeper:

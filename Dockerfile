@@ -25,4 +25,4 @@ CMD if [ "${ENV}" = "dev" ] ; then \
     fi \
     && go test tests/*_test.go -failfast -v ;
 
-EXPOSE 8000
+EXPOSE 8009
