@@ -1,0 +1,4 @@
+docker-compose.yaml
+config.yaml
+vendor/*
+Gopkg.lock

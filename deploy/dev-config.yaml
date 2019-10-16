@@ -15,8 +15,8 @@ development:
   kafka:
     host: kafka
     port: "9092"
-    user: user
-    pass: oRB5KjfuHdXc
+    user: asirauser
+    pass: asirapass
     client_id: asira
     sasl: false
     log_verbose: true
