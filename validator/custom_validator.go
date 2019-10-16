@@ -12,11 +12,11 @@ import (
 	"github.com/thedevsaddam/govalidator"
 )
 
-type AsiraValidator struct {
+type MessagingValidator struct {
 	DB *gorm.DB `json:"db"`
 }
 
-func (a *AsiraValidator) CustomValidatorRules() {
+func (a *MessagingValidator) CustomValidatorRules() {
 	// unique value on each column. format : []string{"unique:[table],[column],[exclude_column],[excluded_value]"}
 	govalidator.AddCustomRule("unique", func(field string, rule string, message string, value interface{}) error {
 		var (

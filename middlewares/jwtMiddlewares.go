@@ -1,8 +1,8 @@
 package middlewares
 
 import (
-	"messaging/asira"
 	"fmt"
+	"messaging/messaging"
 	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
@@ -11,7 +11,7 @@ import (
 )
 
 func SetClientJWTmiddlewares(g *echo.Group, role string) {
-	jwtConfig := asira.App.Config.GetStringMap(fmt.Sprintf("%s.jwt", asira.App.ENV))
+	jwtConfig := messaging.App.Config.GetStringMap(fmt.Sprintf("%s.jwt", messaging.App.ENV))
 
 	g.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningMethod: "HS512",

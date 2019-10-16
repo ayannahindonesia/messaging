@@ -1,10 +1,10 @@
 package tests
 
 import (
-	"messaging/asira"
-	"messaging/migration"
 	"encoding/base64"
 	"fmt"
+	"messaging/messaging"
+	"messaging/migration"
 	"net/http"
 	"os"
 
@@ -18,8 +18,8 @@ var (
 
 func init() {
 	// restrict test to development environment only.
-	if asira.App.ENV != "development" {
-		fmt.Printf("test aren't allowed in %s environment.", asira.App.ENV)
+	if messaging.App.ENV != "development" {
+		fmt.Printf("test aren't allowed in %s environment.", messaging.App.ENV)
 		os.Exit(1)
 	}
 }

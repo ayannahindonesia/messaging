@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"messaging/asira"
-	"messaging/models"
 	"encoding/base64"
 	"fmt"
+	"messaging/messaging"
+	"messaging/models"
 	"net/http"
 	"strconv"
 	"strings"
@@ -44,7 +44,7 @@ func ClientLogin(c echo.Context) error {
 		return returnInvalidResponse(http.StatusInternalServerError, "", fmt.Sprint(err))
 	}
 
-	jwtConf := asira.App.Config.GetStringMap(fmt.Sprintf("%s.jwt", asira.App.ENV))
+	jwtConf := messaging.App.Config.GetStringMap(fmt.Sprintf("%s.jwt", messaging.App.ENV))
 	expiration := time.Duration(jwtConf["duration"].(int)) * time.Minute
 
 	return c.JSON(http.StatusOK, map[string]interface{}{

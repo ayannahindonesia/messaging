@@ -1,9 +1,9 @@
-package asira
+package messaging
 
 import (
-	"messaging/validator"
 	"fmt"
 	"log"
+	"messaging/validator"
 	"os"
 	"strings"
 	"time"
@@ -55,7 +55,7 @@ func init() {
 	App.KafkaInit()
 
 	// apply custom validator
-	v := validator.AsiraValidator{DB: App.DB}
+	v := validator.MessagingValidator{DB: App.DB}
 	v.CustomValidatorRules()
 }
 

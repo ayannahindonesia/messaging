@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"messaging/asira"
 	"fmt"
+	"messaging/messaging"
 	"net/http"
 
 	"github.com/Shopify/sarama"
@@ -26,13 +26,13 @@ func Ping(c echo.Context) error {
 }
 
 func healthcheckKafka() (err error) {
-	producer, err := sarama.NewAsyncProducer([]string{asira.App.Kafka.Host}, asira.App.Kafka.Config)
+	producer, err := sarama.NewAsyncProducer([]string{messaging.App.Kafka.Host}, messaging.App.Kafka.Config)
 	if err != nil {
 		return err
 	}
 	defer producer.Close()
 
-	consumer, err := sarama.NewConsumer([]string{asira.App.Kafka.Host}, asira.App.Kafka.Config)
+	consumer, err := sarama.NewConsumer([]string{messaging.App.Kafka.Host}, messaging.App.Kafka.Config)
 	if err != nil {
 		return err
 	}
@@ -42,7 +42,7 @@ func healthcheckKafka() (err error) {
 }
 
 func healthcheckDB() (err error) {
-	dbconf := asira.App.Config.GetStringMap(fmt.Sprintf("%s.database", asira.App.ENV))
+	dbconf := messaging.App.Config.GetStringMap(fmt.Sprintf("%s.database", messaging.App.ENV))
 	connectionString := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s?sslmode=%s&connect_timeout=5", dbconf["username"].(string), dbconf["password"].(string), dbconf["host"].(string), dbconf["port"].(string), dbconf["table"].(string), dbconf["sslmode"].(string))
 
 	db, err := gorm.Open("postgres", connectionString)

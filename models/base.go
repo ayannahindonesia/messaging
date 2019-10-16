@@ -1,11 +1,11 @@
 package models
 
 import (
-	"messaging/asira"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
+	"messaging/messaging"
 	"strings"
 
 	"github.com/Shopify/sarama"
@@ -17,14 +17,14 @@ func KafkaSubmitModel(i interface{}, model string) (err error) {
 		return nil
 	}
 
-	topics := asira.App.Config.GetStringMap(fmt.Sprintf("%s.kafka.topics.produces", asira.App.ENV))
+	topics := messaging.App.Config.GetStringMap(fmt.Sprintf("%s.kafka.topics.produces", messaging.App.ENV))
 
 	var payload interface{}
 	payload = kafkaPayloadBuilder(i, model)
 
 	jMarshal, _ := json.Marshal(payload)
 
-	kafkaProducer, err := sarama.NewAsyncProducer([]string{asira.App.Kafka.Host}, asira.App.Kafka.Config)
+	kafkaProducer, err := sarama.NewAsyncProducer([]string{messaging.App.Kafka.Host}, messaging.App.Kafka.Config)
 	if err != nil {
 		return err
 	}

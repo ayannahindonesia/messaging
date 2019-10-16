@@ -1,13 +1,13 @@
 package main
 
 import (
-	"messaging/asira"
-	"messaging/migration"
-	"messaging/router"
 	"database/sql"
 	"flag"
 	"fmt"
 	"log"
+	"messaging/messaging"
+	"messaging/migration"
+	"messaging/router"
 	"os"
 
 	"github.com/labstack/echo/middleware"
@@ -19,7 +19,7 @@ var (
 )
 
 func main() {
-	defer asira.App.Close()
+	defer messaging.App.Close()
 
 	flags.Usage = usage
 	flags.Parse(os.Args[1:])
@@ -33,14 +33,14 @@ func main() {
 		break
 	case "run":
 		e := router.NewRouter()
-		if asira.App.Config.GetBool("react_cors") {
+		if messaging.App.Config.GetBool("react_cors") {
 			e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 				AllowOrigins: []string{"*"},
 				AllowMethods: []string{"*"},
 				AllowHeaders: []string{"*"},
 			}))
 		}
-		e.Logger.Fatal(e.Start(":" + asira.App.Port))
+		e.Logger.Fatal(e.Start(":" + messaging.App.Port))
 		os.Exit(0)
 		break
 	case "seed":
@@ -67,7 +67,7 @@ func main() {
 			flags.Usage()
 		}
 
-		dbconf := asira.App.Config.GetStringMap(fmt.Sprintf("%s.database", asira.App.ENV))
+		dbconf := messaging.App.Config.GetStringMap(fmt.Sprintf("%s.database", messaging.App.ENV))
 		connectionString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s password=%s", dbconf["host"].(string), dbconf["username"].(string), dbconf["table"].(string), dbconf["sslmode"].(string), dbconf["password"].(string))
 
 		db, err := sql.Open("postgres", connectionString)

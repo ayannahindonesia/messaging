@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"messaging/asira"
 	"fmt"
 	"math/rand"
+	"messaging/messaging"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -69,7 +69,7 @@ func returnInvalidResponse(httpcode int, details interface{}, message string) er
 
 // self explanation
 func createJwtToken(id string, role string) (string, error) {
-	jwtConf := asira.App.Config.GetStringMap(fmt.Sprintf("%s.jwt", asira.App.ENV))
+	jwtConf := messaging.App.Config.GetStringMap(fmt.Sprintf("%s.jwt", messaging.App.ENV))
 
 	claim := JWTclaims{
 		id,

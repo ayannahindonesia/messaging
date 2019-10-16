@@ -1,9 +1,9 @@
 package middlewares
 
 import (
-	"messaging/asira"
 	"fmt"
 	"log"
+	"messaging/messaging"
 	"strings"
 	"sync"
 
@@ -21,10 +21,10 @@ var wg sync.WaitGroup
 
 func init() {
 	var err error
-	topics := asira.App.Config.GetStringMap(fmt.Sprintf("%s.kafka.topics.consumes", asira.App.ENV))
+	topics := messaging.App.Config.GetStringMap(fmt.Sprintf("%s.kafka.topics.consumes", messaging.App.ENV))
 
 	kafka := &AsiraKafkaHandlers{}
-	kafka.KafkaConsumer, err = sarama.NewConsumer([]string{asira.App.Kafka.Host}, asira.App.Kafka.Config)
+	kafka.KafkaConsumer, err = sarama.NewConsumer([]string{messaging.App.Kafka.Host}, messaging.App.Kafka.Config)
 	if err != nil {
 		log.Printf("error while creating new kafka consumer : %v", err)
 	}

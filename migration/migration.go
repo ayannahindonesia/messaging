@@ -1,14 +1,14 @@
 package migration
 
 import (
-	"messaging/asira"
-	"messaging/models"
 	"fmt"
+	"messaging/messaging"
+	"messaging/models"
 	"strings"
 )
 
 func Seed() {
-	if asira.App.ENV == "development" {
+	if messaging.App.ENV == "development" {
 		// seed internals
 		internals := []models.Internals{
 			models.Internals{
@@ -43,7 +43,7 @@ func Seed() {
 }
 
 func TestSeed() {
-	if asira.App.ENV == "development" {
+	if messaging.App.ENV == "development" {
 		// seed internals
 		internals := []models.Internals{
 			models.Internals{
@@ -90,7 +90,7 @@ func Truncate(tableList []string) (err error) {
 
 		tables := strings.Join(tableList, ", ")
 		sqlQuery := fmt.Sprintf("TRUNCATE TABLE %s RESTART IDENTITY CASCADE", tables)
-		err = asira.App.DB.Exec(sqlQuery).Error
+		err = messaging.App.DB.Exec(sqlQuery).Error
 		return err
 	}
 
