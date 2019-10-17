@@ -101,11 +101,11 @@ func getClientLoginToken(e *httpexpect.Expect, auth *httpexpect.Expect, admin_id
 			"key":      "adminkey",
 			"password": "adminsecret",
 		}
+		obj = auth.POST("/client/admin_login").WithJSON(payload).
+			Expect().
+			Status(http.StatusOK).JSON().Object()
+		break
 	}
-
-	obj = auth.POST("/client/admin_login").WithJSON(payload).
-		Expect().
-		Status(http.StatusOK).JSON().Object()
 
 	return obj.Value("token").String().Raw()
 }

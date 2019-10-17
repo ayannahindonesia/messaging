@@ -12,7 +12,8 @@ type (
 	Config map[string]interface{}
 )
 
-const URLendpoint string = "http://sms241.xyz/sms/api_sms_otp_send_json.php"
+//const URLendpoint string = "http://sms241.xyz/sms/api_sms_otp_send_json.php"
+const URLendpoint string = "http://sms241.xyz/sms/api_sms_masking_send_json.php"
 
 func Send(con Config) (body []byte, err error) {
 
