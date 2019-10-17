@@ -2,3 +2,6 @@
     name= "gitlab.com/asira-ayannah/basemodel"
     branch = "master"
     source = "https://asira:Uo9Jt_2rPGAzc7vzBri_@gitlab.com/asira-ayannah/basemodel.git"
+[[constraint]]
+  name = "github.com/jarcoal/httpmock"
+  version = "1.0.4"

@@ -83,6 +83,33 @@ func getAdminLoginToken(e *httpexpect.Expect, auth *httpexpect.Expect, admin_id 
 	return obj.Value("token").String().Raw()
 }
 
+func getClientLoginToken(e *httpexpect.Expect, auth *httpexpect.Expect, admin_id string) string {
+	obj := auth.GET("/clientauth").
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	clientToken := obj.Value("token").String().Raw()
+
+	auth = e.Builder(func(req *httpexpect.Request) {
+		req.WithHeader("Authorization", "Bearer "+clientToken)
+	})
+
+	var payload map[string]interface{}
+	switch admin_id {
+	case "1":
+		payload = map[string]interface{}{
+			"key":      "adminkey",
+			"password": "adminsecret",
+		}
+	}
+
+	obj = auth.POST("/client/admin_login").WithJSON(payload).
+		Expect().
+		Status(http.StatusOK).JSON().Object()
+
+	return obj.Value("token").String().Raw()
+}
+
 func getLenderAdminToken(e *httpexpect.Expect, auth *httpexpect.Expect) string {
 	obj := auth.GET("/clientauth").
 		Expect().
