@@ -7,17 +7,19 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"messaging/messaging"
 	"net/http"
 
 	"github.com/jarcoal/httpmock"
 )
 
+//TODO: OOP style partner
 type (
 	Config map[string]interface{}
 )
 
-//const URLendpoint string = "http://sms241.xyz/sms/api_sms_otp_send_json.php"
-const URLendpoint string = "http://sms241.xyz/sms/api_sms_masking_send_json.php"
+//const URLendpoint string = "http://sms241.xyz/sms/api_sms_otp_send_json.php" // mahal
+//const URLendpoint string = "http://sms241.xyz/sms/api_sms_masking_send_json.php" //agak mahal
 
 func Send(con Config) (body []byte, err error) {
 	//NOTE(RA): check run in test or normal execution
@@ -66,7 +68,9 @@ func Send(con Config) (body []byte, err error) {
 	//set payload
 	payload, _ := json.Marshal(con)
 	//send request
-	request, err := http.Post(URLendpoint, "application/json", bytes.NewBuffer(payload))
+	Partners := messaging.App.Config.GetStringMap(fmt.Sprintf("%s.partners.adsmedia", messaging.App.ENV))
+	hostUrl := Partners["host_url"].(string)
+	request, err := http.Post(hostUrl, "application/json", bytes.NewBuffer(payload))
 	if err != nil {
 		return nil, err
 	}
@@ -80,4 +84,17 @@ func Send(con Config) (body []byte, err error) {
 	log.Println(string(body))
 
 	return body, err
+}
+
+func PrepareRequestData(phoneNumber string, message string) (con Config) {
+	var data = []map[string]string{
+		{"number": phoneNumber, "message": message, "sendingdatetime": ""}, //time.Now().String()
+	}
+	Partners := messaging.App.Config.GetStringMap(fmt.Sprintf("%s.partners.adsmedia", messaging.App.ENV))
+	conf := Config{
+		"apikey":      Partners["api_key"],
+		"callbackurl": "",
+		"datapacket":  data,
+	}
+	return conf
 }

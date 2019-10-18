@@ -28,14 +28,9 @@ func SendMessage(c echo.Context) error {
 	//build otp request to partner
 	number := messaging.PhoneNumber
 	message := messaging.Message
-	var data = []map[string]string{
-		{"number": number, "message": message, "sendingdatetime": ""}, //time.Now().String()
-	}
-	conf := partner.Config{
-		"apikey":      "7a8f16c956ae0c1e50461972d972d228",
-		"callbackurl": "",
-		"datapacket":  data,
-	}
+	//build request data
+	conf := partner.PrepareRequestData(number, message)
+	//send to API partner
 	response, err := partner.Send(conf)
 	if err != nil {
 		return returnInvalidResponse(http.StatusInternalServerError, err, "")
