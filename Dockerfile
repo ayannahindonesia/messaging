@@ -8,6 +8,8 @@ WORKDIR $GOPATH/src/"${APPNAME}"
 
 RUN apk add --update git gcc libc-dev;
 #  tzdata wget gcc libc-dev make openssl py-pip;
+RUN APK --no-chache add tzdata
+ENV TZ=Asia/Jakarta
 
 RUN go get -u github.com/golang/dep/cmd/dep
 
