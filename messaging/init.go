@@ -51,7 +51,7 @@ func init() {
 		log.Printf("DB init error : %v", err)
 	}
 
-	App.KafkaInit()
+	//App.KafkaInit()
 
 	// apply custom validator
 	v := validator.MessagingValidator{DB: App.DB}
