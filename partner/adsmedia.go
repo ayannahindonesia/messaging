@@ -16,8 +16,9 @@ type (
 const URLendpoint string = "http://sms241.xyz/sms/api_sms_masking_send_json.php"
 
 func Send(con Config) (body []byte, err error) {
-
+	//set payload
 	payload, _ := json.Marshal(con)
+	//send request
 	request, err := http.Post(URLendpoint, "application/json", bytes.NewBuffer(payload))
 	if err != nil {
 		return nil, err
