@@ -9,22 +9,22 @@ import (
 
 func Seed() {
 	if messaging.App.ENV == "development" {
-		// seed internals
-		internals := []models.Internals{
-			models.Internals{
+		// seed clients
+		Clients := []models.Clients{
+			models.Clients{
 				Name:   "admin",
 				Key:    "adminkey",
 				Role:   "admin",
 				Secret: "adminsecret",
 			},
-			models.Internals{
+			models.Clients{
 				Name:   "Client",
 				Key:    "clientkey",
 				Role:   "client",
 				Secret: "clientsecret",
 			},
 		}
-		for _, internal := range internals {
+		for _, internal := range Clients {
 			internal.Create()
 		}
 
@@ -44,22 +44,22 @@ func Seed() {
 
 func TestSeed() {
 	if messaging.App.ENV == "development" {
-		// seed internals
-		internals := []models.Internals{
-			models.Internals{
+		// seed Clients
+		Clients := []models.Clients{
+			models.Clients{
 				Name:   "admin",
 				Key:    "adminkey",
 				Role:   "admin",
 				Secret: "adminsecret",
 			},
-			models.Internals{
+			models.Clients{
 				Name:   "Client",
 				Key:    "clientkey",
 				Role:   "client",
 				Secret: "clientsecret",
 			},
 		}
-		for _, internal := range internals {
+		for _, internal := range Clients {
 			internal.Create()
 		}
 
@@ -83,7 +83,7 @@ func Truncate(tableList []string) (err error) {
 	if len(tableList) > 0 {
 		if tableList[0] == "all" {
 			tableList = []string{
-				"internals",
+				"clients",
 				"messagings",
 			}
 		}

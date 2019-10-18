@@ -30,8 +30,8 @@ func ClientLogin(c echo.Context) error {
 		Secret string `json:"secret"`
 	}
 
-	internals := models.Internals{}
-	err = internals.FilterSearchSingle(&Login{
+	Clients := models.Clients{}
+	err = Clients.FilterSearchSingle(&Login{
 		Key:    auth[0],
 		Secret: auth[1],
 	})
@@ -39,7 +39,7 @@ func ClientLogin(c echo.Context) error {
 		return returnInvalidResponse(http.StatusUnauthorized, "", "Invalid Credentials")
 	}
 
-	token, err := createJwtToken(strconv.FormatUint(internals.ID, 10), internals.Role)
+	token, err := createJwtToken(strconv.FormatUint(Clients.ID, 10), Clients.Role)
 	if err != nil {
 		return returnInvalidResponse(http.StatusInternalServerError, "", fmt.Sprint(err))
 	}
