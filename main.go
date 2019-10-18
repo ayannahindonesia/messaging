@@ -88,11 +88,11 @@ func usage() {
 	usagestring := `
 to run the app :
 	[app_name] run
-	example : asira run
+	example : messaging run
 
 to update db :
 	[app_name] migrate [goose_command]
-	example : asira migrate up
+	example : messaging migrate up
 	goose command lists:
 		up                   Migrate the DB to the most recent version available
 		up-by-one            Migrate the DB up by 1
@@ -108,11 +108,11 @@ to update db :
 
 database seeding : (development environment only)
 	[app_name] seed
-	example : asira seed
+	example : messaging seed
 
 database truncate : (development environment only)
 	[app_name] truncate [table(s)]
-	example : asira truncate borrowers | asira truncate borrowers loans | asira truncate all
+	example : messaging truncate borrowers | messaging truncate borrowers loans | messaging truncate all
 	replace [table] with 'all' to truncate all tables
 	`
 
