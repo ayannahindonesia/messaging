@@ -47,14 +47,13 @@ func TestSMSSendOTP(t *testing.T) {
 	}
 
 	// expect valid response
-	auth.POST("/client/send").
+	auth.POST("/client/message_otp_send").
 		WithJSON(payload).
 		Expect().
 		Status(http.StatusOK).
 		JSON().
 		Object()
-
-	auth.POST("/client/send").WithJSON(nil).
+	auth.POST("/client/message_otp_send").WithJSON(nil).
 		Expect().
 		Status(http.StatusUnprocessableEntity).
 		JSON().

@@ -11,5 +11,5 @@ func ClientGroup(e *echo.Echo) {
 	g := e.Group("/client")
 	middlewares.SetClientJWTmiddlewares(g, "client")
 
-	g.POST("/send", handlers.SendMessage)
+	g.POST("/message_otp_send", handlers.SendMessage)
 }

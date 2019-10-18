@@ -16,6 +16,8 @@ CREATE TABLE "messagings" (
     "id" bigserial,
     "partner" varchar(255) NOT NULL,
     "status" BOOLEAN,
+    "phone_number" varchar(17) NOT NULL,
+    "message" varchar(153) NOT NULL,
     "send_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
     "created_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
     "updated_time" timestamptz DEFAULT CURRENT_TIMESTAMP,

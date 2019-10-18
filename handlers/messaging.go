@@ -1,33 +1,21 @@
 package handlers
 
 import (
-	"flag"
-	"fmt"
-	"log"
 	"messaging/models"
 	"messaging/partner"
 	"net/http"
 
-	"github.com/jarcoal/httpmock"
 	"github.com/labstack/echo"
 	"github.com/thedevsaddam/govalidator"
 )
 
 func SendMessage(c echo.Context) error {
 
-	//NOTE(RA): check run in test or normal execution
-	if flag.Lookup("test.v") == nil {
-		fmt.Println("normal run")
-	} else {
-		httpmock.Activate()
-		defer httpmock.DeactivateAndReset()
-		fmt.Println("run under go test")
-	}
-
 	defer c.Request().Body.Close()
 
 	messaging := models.Messaging{}
 
+	//TODO: OTP generate 6 digit value
 	payloadRules := govalidator.MapData{
 		"phone_number": []string{"required"}, //TODO:, "id_phonenumber"
 		"message":      []string{"required"},
@@ -48,54 +36,19 @@ func SendMessage(c echo.Context) error {
 		"callbackurl": "",
 		"datapacket":  data,
 	}
-	//TODO: storing store
-
-	//normal run
-	//DONE: check dev or prod ??
-	var response []byte
-	if flag.Lookup("test.v") == nil {
-		log.Println("normal run")
-		response, err = partner.Send(conf)
-		//
-	} else {
-		//TODO mockup responder
-		httpmock.RegisterResponder("POST", "/client/send",
-			func(req *http.Request) (*http.Response, error) {
-				resp, err := httpmock.NewJsonResponse(200, nil)
-				if err != nil {
-					return httpmock.NewStringResponse(500, err.Error()), nil
-				}
-				return resp, nil
-			},
-		)
-
-		response, err = partner.Send(conf)
-
-		// Exact URL match
-		/*			httpmock.RegisterResponder("GET", UrlAuth,
-						httpmock.NewStringResponder(200, `[{"id": 1, "name": "My Great Article"}]`))
-
-					// Regexp match (could use httpmock.RegisterRegexpResponder instead)
-					httpmock.RegisterResponder("GET", `=~^https://sms241\.xyz/articles/id/\d+\z`,
-						httpmock.NewStringResponder(200, `{"id": 1, "name": "My Great Article"}`))
-
-					// do stuff that makes a request to articles
-
-					// get count info
-					httpmock.GetTotalCallCount()
-
-
-					// get the amount of calls for the registered responder
-					info := httpmock.GetCallCountInfo()
-					info["GET https://sms241.xyz/sms/api_sms_otp_send_json.php"]
-					info["GET https://mybiz.xyz/articles/id/12"]
-					info[`GET =~^https://mybiz\.xyz/articles/id/\d+\z`]
-		*/
-
-	}
+	response, err := partner.Send(conf)
 	if err != nil {
 		return returnInvalidResponse(http.StatusInternalServerError, err, "")
 	}
 
+	//TODO: check return value from API Partner
+	messaging.Status = true
+	//TODO: dinamic partner setting
+	messaging.Partner = "adsmedia"
+	//DONE: storing models
+	err = messaging.Create()
+	if err != nil {
+		return returnInvalidResponse(http.StatusInternalServerError, err, "Gagal menyimpan pesan OTP")
+	}
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "SMS Sent", "Config": conf, "Response": string(response)})
 }
