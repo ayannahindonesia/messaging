@@ -14,6 +14,7 @@ type (
 		Partner     string    `json:"partner" gorm:"column:partner"`
 		Status      bool      `json:"status" gorm:"column:status;type:boolean" sql:"DEFAULT:FALSE"`
 		SendTime    time.Time `json:"send_time" gorm:"column:send_time" sql:"DEFAULT:current_timestamp"`
+		RawResponse string    `json:"raw_response" gorm:"column:raw_response"`
 	}
 )
 

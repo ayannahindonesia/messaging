@@ -41,19 +41,15 @@ func Send(con Config) (body []byte, err error) {
 					return httpmock.NewStringResponse(http.StatusInternalServerError, ""), nil
 				}
 				result := fmt.Sprintf(`{
-					"Config": {
-						"apikey": "7a8f16c956ae0c1e50461972d972d228",
-						"callbackurl": "",
-						"datapacket": [
-							{
-								"number": "%s",
-								"message": "%s",
-								"sendingdatetime": ""
-							}
-						]
-					},
-					"Response": "{\"sending_respon\":[{\"globalstatus\":10,\"globalstatustext\":\"Success\",\"datapacket\":[{\"packet\":{\"number\":\"6282297335657\",\"sendingid\":1287265,\"sendingstatus\":10,\"sendingstatustext\":\"success\",\"price\":320}}]}]}",
-					"message": "SMS Sent"
+					"id": 5,
+					"created_time": "2019-10-21T12:34:28.726458+07:00",
+					"updated_time": "2019-10-21T12:34:28.726458+07:00",
+					"phone_number": "%s",
+					"message": "%s",
+					"partner": "adsmedia",
+					"raw_response": ""{\"sending_respon\":[{\"globalstatus\":10,\"globalstatustext\":\"Success\",\"datapacket\":[{\"packet\":{\"number\":\"6282297335657\",\"sendingid\":1287265,\"sendingstatus\":10,\"sendingstatustext\":\"success\",\"price\":320}}]}]}",
+					"status": true,
+					"send_time": "2019-10-21T12:34:28.726458+07:00"
 				}`, PayloadSmsOTP["phone_number"], PayloadSmsOTP["message"])
 				fmt.Println(result)
 				resp, err := httpmock.NewJsonResponse(http.StatusOK, result)

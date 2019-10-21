@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"messaging/models"
 	"messaging/partner"
 	"net/http"
@@ -40,10 +41,13 @@ func SendMessage(c echo.Context) error {
 	messaging.Status = true
 	//TODO: dinamic partner setting
 	messaging.Partner = "adsmedia"
+	//raw response from API partner
+	messaging.RawResponse = string(response)
 	//DONE: storing models
 	err = messaging.Create()
 	if err != nil {
 		return returnInvalidResponse(http.StatusInternalServerError, err, "Gagal menyimpan pesan OTP")
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{"message": "SMS Sent", "Config": conf, "Response": string(response)})
+	log.Println(string(response))
+	return c.JSON(http.StatusOK, messaging)
 }

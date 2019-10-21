@@ -18,6 +18,7 @@ CREATE TABLE "messagings" (
     "status" BOOLEAN,
     "phone_number" varchar(17) NOT NULL,
     "message" varchar(153) NOT NULL,
+    "raw_response" text NOT NULL,
     "send_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
     "created_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
     "updated_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
