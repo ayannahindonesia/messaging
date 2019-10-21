@@ -77,11 +77,11 @@ paths:
               schema:
                 type: object
                 allOf:
-                  - $ref: '#/components/schemas/jwtResponse'
+                  - $ref: '#/components/schemas/SendSMSResponse'
         '401':
           description: Unauthorized
         '422':
-          description: Unauthorized
+          description: Unprocessable Entity
           content:
             application/json:
               schema:
@@ -123,7 +123,41 @@ components:
           example: 081123581321
         message:
           type: string
-          example: this is your OTP message
+          example: this is your OTP message 011235
+    SendSMSResponse: 
+      type: object
+      properties:
+        id:
+          type: number
+          example: 4
+        created_time:
+          type: string
+          example: "2019-06-26T16:40:33.372829+07:00"
+        updated_time:
+          type: string
+          example: "2019-06-26T16:40:33.372829+07:00"
+        client_id:
+          type: number
+          example: 2
+        phone_number:
+          type: number
+          example: 081123581321
+        message:
+          type: string
+          example: this is your OTP message 011235
+        partner:
+          type: string
+          example: adsmedia
+        status:
+          type: boolean
+          example: true
+        send_time:
+          type: string
+          example: "2019-10-21T18:43:43.984573+07:00"
+        raw_response:
+          type: string
+          example: >-
+            "{\"sending_respon\":[{\"globalstatus\":10,\"globalstatustext\":\"Success\",\"datapacket\":[{\"packet\":{\"number\":\"6281123581321\",\"sendingid\":1287946,\"sendingstatus\":10,\"sendingstatustext\":\"success\",\"price\":320}}]}]}"
   parameters:
     clienttoken:
       required: true
