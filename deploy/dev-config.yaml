@@ -14,7 +14,7 @@ development:
     timezone: Asia/Jakarta
   partners:
     adsmedia:
-      host_url: "http://sms241.xyz/sms/api_sms_masking_send_json.php"
+      host_url: "https://sms241.xyz/sms/api_sms_masking_send_json.php"
       api_key: "7a8f16c956ae0c1e50461972d972d228"
   # kafka:
   #   host: kafka
