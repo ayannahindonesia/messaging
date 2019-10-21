@@ -33,7 +33,7 @@ func Send(con Config) (body []byte, err error) {
 		log.Println("run under go test")
 
 		//DONE mockup responder
-		httpmock.RegisterResponder("POST", "http://sms241.xyz/sms/api_sms_masking_send_json.php",
+		httpmock.RegisterResponder("POST", "https://sms241.xyz/sms/api_sms_masking_send_json.php",
 			func(req *http.Request) (*http.Response, error) {
 				//DONE: mockup with parameters and POST
 				PayloadSmsOTP := make(map[string]interface{})
