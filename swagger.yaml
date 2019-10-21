@@ -57,6 +57,45 @@ paths:
                 type: object
                 allOf:
                   - $ref: '#/components/schemas/ErrorResponse'
+  /client/message_otp_send:
+    post:
+      tags:
+        - Message
+      summary: send sms to target phone number with custom message 
+      parameters:
+        - $ref: '#/components/parameters/authtoken'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendSMS'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/jwtResponse'
+        '401':
+          description: Unauthorized
+        '422':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
@@ -76,6 +115,15 @@ components:
         message:
           type: string
           example: this is your error message
+    SendSMS: 
+      type: object
+      properties:
+        phone_number:
+          type: object
+          example: 081123581321
+        message:
+          type: string
+          example: this is your OTP message
   parameters:
     clienttoken:
       required: true
