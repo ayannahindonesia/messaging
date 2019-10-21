@@ -44,6 +44,7 @@ func Send(con Config) (body []byte, err error) {
 					"id": 5,
 					"created_time": "2019-10-21T12:34:28.726458+07:00",
 					"updated_time": "2019-10-21T12:34:28.726458+07:00",
+					"client_id": 2,
 					"phone_number": "%s",
 					"message": "%s",
 					"partner": "adsmedia",

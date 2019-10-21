@@ -14,6 +14,7 @@ CREATE TABLE "clients" (
 
 CREATE TABLE "messagings" (
     "id" bigserial,
+    "client_id" bigserial,
     "partner" varchar(255) NOT NULL,
     "status" BOOLEAN,
     "phone_number" varchar(17) NOT NULL,

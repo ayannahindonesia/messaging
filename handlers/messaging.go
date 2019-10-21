@@ -5,15 +5,21 @@ import (
 	"messaging/models"
 	"messaging/partner"
 	"net/http"
+	"strconv"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/thedevsaddam/govalidator"
 )
 
 func SendMessage(c echo.Context) error {
-
 	defer c.Request().Body.Close()
-
+	//get user id
+	user := c.Get("user")
+	token := user.(*jwt.Token)
+	claims := token.Claims.(jwt.MapClaims)
+	clientID, _ := strconv.Atoi(claims["jti"].(string))
+	//get messaging model
 	messaging := models.Messaging{}
 
 	//TODO: OTP generate 6 digit value
@@ -25,7 +31,6 @@ func SendMessage(c echo.Context) error {
 	if validate != nil {
 		return returnInvalidResponse(http.StatusUnprocessableEntity, validate, "validation error")
 	}
-
 	//build otp request to partner
 	number := messaging.PhoneNumber
 	message := messaging.Message
@@ -43,6 +48,8 @@ func SendMessage(c echo.Context) error {
 	messaging.Partner = "adsmedia"
 	//raw response from API partner
 	messaging.RawResponse = string(response)
+	//clientID from jwt
+	messaging.ClientID = clientID
 	//DONE: storing models
 	err = messaging.Create()
 	if err != nil {

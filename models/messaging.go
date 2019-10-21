@@ -9,6 +9,7 @@ import (
 type (
 	Messaging struct {
 		basemodel.BaseModel
+		ClientID    int       `json:"client_id" gorm:"column:client_id"`
 		PhoneNumber string    `json:"phone_number" gorm:"column:phone_number"`
 		Message     string    `json:"message" gorm:"column:message"`
 		Partner     string    `json:"partner" gorm:"column:partner"`
