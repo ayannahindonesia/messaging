@@ -12,5 +12,5 @@ func ClientGroup(e *echo.Echo) {
 	middlewares.SetClientJWTmiddlewares(g, "client")
 
 	g.POST("/message_otp_send", handlers.MessageOTPSend)
-	g.POST("/message_otp", handlers.MessageOTPList)
+	g.GET("/message_otp", handlers.MessageOTPList)
 }

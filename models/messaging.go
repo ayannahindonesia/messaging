@@ -9,11 +9,12 @@ import (
 type (
 	Messaging struct {
 		basemodel.BaseModel
-		ClientID    int       `json:"client_id" gorm:"column:client_id"`
-		PhoneNumber string    `json:"phone_number" gorm:"column:phone_number"`
-		Message     string    `json:"message" gorm:"column:message"`
-		Partner     string    `json:"partner" gorm:"column:partner"`
-		Status      bool      `json:"status" gorm:"column:status;type:boolean" sql:"DEFAULT:FALSE"`
+		ClientID    int    `json:"client_id" gorm:"column:client_id"`
+		PhoneNumber string `json:"phone_number" gorm:"column:phone_number"`
+		Message     string `json:"message" gorm:"column:message"`
+		Partner     string `json:"partner" gorm:"column:partner"`
+		//TODO: "success", "pending", "failed"
+		Status      string    `json:"status" gorm:"column:status"`
 		SendTime    time.Time `json:"send_time" gorm:"column:send_time" sql:"DEFAULT:current_timestamp"`
 		RawResponse string    `json:"raw_response" gorm:"column:raw_response"`
 	}
