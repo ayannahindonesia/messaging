@@ -43,8 +43,14 @@ func MessageOTPSend(c echo.Context) error {
 		return returnInvalidResponse(http.StatusInternalServerError, err, "")
 	}
 
+	status, _ := partner.GetStatusResponse(response)
+	/*
+		if err != nil {
+			return returnInvalidResponse(http.StatusInternalServerError, err, "Internal Error : "+err.Error())
+		}
+	*/
 	//TODO: check return value from API Partner
-	messaging.Status = "success"
+	messaging.Status = status
 	//TODO: dinamic partner setting
 	messaging.Partner = "adsmedia"
 	//raw response from API partner
