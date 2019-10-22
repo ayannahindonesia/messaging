@@ -1,0 +1,120 @@
+package main
+
+import (
+	"database/sql"
+	"flag"
+	"fmt"
+	"log"
+	"messaging/messaging"
+	"messaging/migration"
+	"messaging/router"
+	"os"
+
+	"github.com/labstack/echo/middleware"
+	"github.com/pressly/goose"
+)
+
+var (
+	flags = flag.NewFlagSet("goose", flag.ExitOnError)
+)
+
+func main() {
+	defer messaging.App.Close()
+
+	flags.Usage = usage
+	flags.Parse(os.Args[1:])
+	args := flags.Args()
+
+	migrationDir := "migration" // migration directory
+
+	switch args[0] {
+	default:
+		flags.Usage()
+		break
+	case "run":
+		e := router.NewRouter()
+		if messaging.App.Config.GetBool("react_cors") {
+			e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+				AllowOrigins: []string{"*"},
+				AllowMethods: []string{"*"},
+				AllowHeaders: []string{"*"},
+			}))
+		}
+		e.Logger.Fatal(e.Start(":" + messaging.App.Port))
+		os.Exit(0)
+		break
+	case "seed":
+		migration.Seed()
+		os.Exit(0)
+		break
+	case "truncate":
+		err := migration.Truncate(args[1:])
+		if err != nil {
+			log.Fatalf("%v", err)
+			flags.Usage()
+		}
+		os.Exit(0)
+		break
+	case "create":
+		if err := goose.Run("create", nil, migrationDir, args[1:]...); err != nil {
+			log.Fatalf("goose create: %v", err)
+			flags.Usage()
+		}
+		return
+	case "migrate": // command example : [app name] migrate up
+		if err := goose.SetDialect("postgres"); err != nil {
+			log.Fatalf("goose set dialect : %v", err)
+			flags.Usage()
+		}
+
+		dbconf := messaging.App.Config.GetStringMap(fmt.Sprintf("%s.database", messaging.App.ENV))
+		connectionString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=%s password=%s", dbconf["host"].(string), dbconf["username"].(string), dbconf["table"].(string), dbconf["sslmode"].(string), dbconf["password"].(string))
+
+		db, err := sql.Open("postgres", connectionString)
+		if err != nil {
+			log.Fatalf("-connectionString=%q: %v\n", connectionString, err)
+			flags.Usage()
+		}
+
+		if err := goose.Run(args[1], db, migrationDir, args[2:]...); err != nil {
+			log.Fatalf("goose run: %v", err)
+			flags.Usage()
+		}
+		break
+	}
+}
+
+func usage() {
+	usagestring := `
+to run the app :
+	[app_name] run
+	example : messaging run
+
+to update db :
+	[app_name] migrate [goose_command]
+	example : messaging migrate up
+	goose command lists:
+		up                   Migrate the DB to the most recent version available
+		up-by-one            Migrate the DB up by 1
+		up-to VERSION        Migrate the DB to a specific VERSION
+		down                 Roll back the version by 1
+		down-to VERSION      Roll back to a specific VERSION
+		redo                 Re-run the latest migration
+		reset                Roll back all migrations
+		status               Dump the migration status for the current DB
+		version              Print the current version of the database
+		create NAME [sql|go] Creates new migration file with the current timestamp
+		fix                  Apply sequential ordering to migrations
+
+database seeding : (development environment only)
+	[app_name] seed
+	example : messaging seed
+
+database truncate : (development environment only)
+	[app_name] truncate [table(s)]
+	example : messaging truncate borrowers | messaging truncate borrowers loans | messaging truncate all
+	replace [table] with 'all' to truncate all tables
+	`
+
+	log.Print(usagestring)
+}
