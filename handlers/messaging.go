@@ -6,13 +6,14 @@ import (
 	"messaging/partner"
 	"net/http"
 	"strconv"
+	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/thedevsaddam/govalidator"
 )
 
-func SendMessage(c echo.Context) error {
+func MessageOTPSend(c echo.Context) error {
 	defer c.Request().Body.Close()
 	//get user id
 	user := c.Get("user")
@@ -57,4 +58,49 @@ func SendMessage(c echo.Context) error {
 	}
 	log.Println(string(response))
 	return c.JSON(http.StatusOK, messaging)
+}
+
+func MessageOTPList(c echo.Context) error {
+	defer c.Request().Body.Close()
+
+	// pagination parameters
+	rows, err := strconv.Atoi(c.QueryParam("rows"))
+	page, err := strconv.Atoi(c.QueryParam("page"))
+	order := c.QueryParam("orderby")
+	sort := c.QueryParam("sort")
+
+	// filters
+	id := customSplit(c.QueryParam("id"), ",")
+	ClientID, _ := strconv.Atoi(c.QueryParam("client_id"))
+	PhoneNumber := c.QueryParam("phone_number")
+	Message := c.QueryParam("message")
+	Partner := c.QueryParam("partner")
+	Status, _ := strconv.ParseBool(c.QueryParam("status"))
+	layout := "2019-10-21T12:34:28.726458+07:00"
+	SendTime, _ := time.Parse(layout, c.QueryParam("send_time"))
+	type Filter struct {
+		ID          []string  `json:"id"`
+		ClientID    int       `json:"client_id"`
+		PhoneNumber string    `json:"phone_number" condition:"LIKE"`
+		Message     string    `json:"message" condition:"LIKE"`
+		Partner     string    `json:"partner" condition:"LIKE"`
+		Status      bool      `json:"status"`
+		SendTime    time.Time `json:"send_time"`
+	}
+
+	messaging := models.Messaging{}
+	result, err := messaging.PagedFilterSearch(page, rows, order, sort, &Filter{
+		ID:          id,
+		ClientID:    ClientID,
+		PhoneNumber: PhoneNumber,
+		Message:     Message,
+		Partner:     Partner,
+		Status:      Status,
+		SendTime:    SendTime,
+	})
+	if err != nil {
+		return returnInvalidResponse(http.StatusInternalServerError, err, "pencarian tidak ditemukan")
+	}
+
+	return c.JSON(http.StatusOK, result)
 }
