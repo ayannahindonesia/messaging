@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: '1'
+  version: "1-oas3"
   title: 'API for Messaging'
   description: 'check title'
 # Added by API Auto Mocking Plugin
@@ -14,8 +14,8 @@ servers:
 tags:
   - name : Public
     description: public endpoints
-  - name : Client
-    description: endpoint for clients
+  - name : Messaging
+    description: endpoint for Messaging
   - name : Admin
     description: endpoint for admin
 security:
@@ -43,6 +43,70 @@ paths:
           description: Unauthorized
         '422':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+  /client/message_otp:
+    get:
+      tags:
+        - Message Filter
+      summary: get sms from stored OTP message 
+      parameters:
+        - $ref: '#/components/parameters/authtoken'
+        - in: query
+          name: id
+          schema:
+            type: integer
+            example: 2
+        - in: query
+          name: client_id
+          schema:
+            type: integer
+            example: 3
+        - in: query
+          name: phone_number
+          schema:
+            type: string
+            example: 0822
+        - in: query
+          name: message
+          schema:
+            type: string
+            example: "this your OTP code 123456"
+        - in: query
+          name: status
+          schema:
+            type: string
+            example: "success"
+        - in: query
+          name: send_time
+          schema:
+            type: string
+            example: "2019-10-21T18:43:43.984573+07:00"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/MessageOTPList'
+        '401':
+          description: Unauthorized
+        '422':
+          description: Unprocessable Entity
           content:
             application/json:
               schema:
@@ -96,7 +160,7 @@ paths:
                 type: object
                 allOf:
                   - $ref: '#/components/schemas/ErrorResponse'
-
+  
 components:
   schemas:
     jwtResponse:
@@ -124,6 +188,31 @@ components:
         message:
           type: string
           example: this is your OTP message 011235
+    MessageOTPList:
+      type: object
+      properties:
+        total_data:
+          type: number
+          example: 1
+        rows:
+          type: number
+          example: 5
+        current_page:
+         type: number
+         example: 1
+        last_page:
+         type: number
+         example: 1
+        from:
+         type: number
+         example: 1
+        to:
+         type: number
+         example: 3
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SendSMSResponse'
     SendSMSResponse: 
       type: object
       properties:
