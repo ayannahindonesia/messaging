@@ -42,8 +42,8 @@ func MessageOTPSend(c echo.Context) error {
 	if err != nil {
 		return returnInvalidResponse(http.StatusInternalServerError, err, "")
 	}
-
-	status, _ := partner.GetStatusResponse(response)
+	//get response from parsing json API partner
+	status, err := partner.GetStatusResponse(response)
 	/*
 		if err != nil {
 			return returnInvalidResponse(http.StatusInternalServerError, err, "Internal Error : "+err.Error())
@@ -51,6 +51,12 @@ func MessageOTPSend(c echo.Context) error {
 	*/
 	//TODO: check return value from API Partner
 	messaging.Status = status
+	//error message
+	if err == nil {
+		messaging.ErrorMessage = ""
+	} else {
+		messaging.ErrorMessage = err.Error()
+	}
 	//TODO: dinamic partner setting
 	messaging.Partner = "adsmedia"
 	//raw response from API partner

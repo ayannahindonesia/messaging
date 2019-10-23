@@ -86,7 +86,7 @@ func Send(con Config) (body []byte, err error) {
 					"message": "%s",
 					"partner": "adsmedia",
 					"raw_response": ""{\"sending_respon\":[{\"globalstatus\":10,\"globalstatustext\":\"Success\",\"datapacket\":[{\"packet\":{\"number\":\"6282297335657\",\"sendingid\":1287265,\"sendingstatus\":10,\"sendingstatustext\":\"success\",\"price\":320}}]}]}",
-					"status": true,
+					"status": "success",
 					"send_time": "2019-10-21T12:34:28.726458+07:00"
 				}`, PayloadSmsOTP["phone_number"], PayloadSmsOTP["message"])
 				fmt.Println(result)
