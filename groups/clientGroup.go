@@ -13,4 +13,7 @@ func ClientGroup(e *echo.Echo) {
 
 	g.POST("/message_otp_send", handlers.MessageOTPSend)
 	g.GET("/message_otp", handlers.MessageOTPList)
+
+	g.POST("/message_notification_send", handlers.MessageNotificationSend)
+
 }
