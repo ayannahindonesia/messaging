@@ -11,7 +11,7 @@ import (
 	"github.com/gavv/httpexpect"
 )
 
-func TestSMSSendOTP(t *testing.T) {
+func TestMessageOTPSend(t *testing.T) {
 	RebuildData()
 
 	//UrlAuth := "https://sms241.xyz/sms/api_sms_otp_send_json.php"
@@ -56,6 +56,54 @@ func TestSMSSendOTP(t *testing.T) {
 	auth.POST("/client/message_otp_send").WithJSON(nil).
 		Expect().
 		Status(http.StatusUnprocessableEntity).
+		JSON().
+		Object()
+}
+
+func TestMessageOTPList(t *testing.T) {
+	RebuildData()
+
+	api := router.NewRouter()
+
+	server := httptest.NewServer(api)
+
+	defer server.Close()
+
+	e := httpexpect.New(t, server.URL)
+
+	auth := e.Builder(func(req *httpexpect.Request) {
+		req.WithHeader("Authorization", "Basic "+clientBasicToken)
+	})
+
+	clientToken := getClientLoginToken(e, auth, "0")
+
+	auth = e.Builder(func(req *httpexpect.Request) {
+		req.WithHeader("Authorization", "Bearer "+clientToken)
+	})
+
+	// expect valid response
+	auth.GET("/client/message_otp").
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+
+	obj := auth.GET("/client/message_otp").
+		WithQuery("phone_number", "08").
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+	obj.ContainsKey("data").NotEmpty()
+	//log.Printf("%+v", obj)
+
+	auth2 := e.Builder(func(req *httpexpect.Request) {
+		req.WithHeader("Authorization", "Bearer invalid")
+	})
+	auth2.GET("/client/message_otp").
+		WithQuery("phone_number", "08").
+		Expect().
+		Status(http.StatusUnauthorized).
 		JSON().
 		Object()
 }
