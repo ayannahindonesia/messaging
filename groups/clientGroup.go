@@ -9,8 +9,9 @@ import (
 
 func ClientGroup(e *echo.Echo) {
 	g := e.Group("/client")
-	middlewares.SetClientJWTmiddlewares(g, "client")
+	middlewares.SetClientJWTmiddlewares(g, "admin")
 
-	g.POST("/message_otp_send", handlers.MessageOTPSend)
-	g.GET("/message_otp", handlers.MessageOTPList)
+	g.POST("/message_sms_send", handlers.MessageOTPSend)
+	g.GET("/message_sms", handlers.MessageOTPList)
+	e.GET("/login_admin", handlers.AdminLogin)
 }

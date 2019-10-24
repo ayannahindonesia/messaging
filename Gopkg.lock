@@ -505,6 +505,8 @@
   packages = [
     "acme",
     "acme/autocert",
+    "bcrypt",
+    "blowfish",
     "md4",
     "pbkdf2",
   ]
@@ -665,6 +667,7 @@
     "github.com/spf13/viper",
     "github.com/thedevsaddam/govalidator",
     "gitlab.com/asira-ayannah/basemodel",
+    "golang.org/x/crypto/bcrypt",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

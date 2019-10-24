@@ -26,10 +26,10 @@ func TestMessageOTPSend(t *testing.T) {
 	e := httpexpect.New(t, server.URL)
 
 	auth := e.Builder(func(req *httpexpect.Request) {
-		req.WithHeader("Authorization", "Basic "+clientBasicToken)
+		req.WithHeader("Authorization", "Basic "+clientBasicToken) //adminBasicToken
 	})
 
-	clientToken := getClientLoginToken(e, auth, "0")
+	clientToken := getClientLoginToken(e, auth, "1")
 
 	auth = e.Builder(func(req *httpexpect.Request) {
 		req.WithHeader("Authorization", "Bearer "+clientToken)
@@ -47,13 +47,13 @@ func TestMessageOTPSend(t *testing.T) {
 	}
 
 	// expect valid response
-	auth.POST("/client/message_otp_send").
+	auth.POST("/admin/message_sms_send").
 		WithJSON(payload).
 		Expect().
 		Status(http.StatusOK).
 		JSON().
 		Object()
-	auth.POST("/client/message_otp_send").WithJSON(nil).
+	auth.POST("/admin/message_sms_send").WithJSON(nil).
 		Expect().
 		Status(http.StatusUnprocessableEntity).
 		JSON().
@@ -82,13 +82,13 @@ func TestMessageOTPList(t *testing.T) {
 	})
 
 	// expect valid response
-	auth.GET("/client/message_otp").
+	auth.GET("/admin/message_sms").
 		Expect().
 		Status(http.StatusOK).
 		JSON().
 		Object()
 
-	obj := auth.GET("/client/message_otp").
+	obj := auth.GET("/admin/message_sms").
 		WithQuery("phone_number", "08").
 		Expect().
 		Status(http.StatusOK).
@@ -100,7 +100,7 @@ func TestMessageOTPList(t *testing.T) {
 	auth2 := e.Builder(func(req *httpexpect.Request) {
 		req.WithHeader("Authorization", "Bearer invalid")
 	})
-	auth2.GET("/client/message_otp").
+	auth2.GET("/admin/message_sms").
 		WithQuery("phone_number", "08").
 		Expect().
 		Status(http.StatusUnauthorized).
