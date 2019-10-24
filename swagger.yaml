@@ -97,7 +97,7 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/ErrorResponse'
   
-  /client/message_otp_send:
+  /client/message_sms_send:
     post:
       tags:
         - Message
@@ -136,7 +136,7 @@ paths:
                 type: object
                 allOf:
                   - $ref: '#/components/schemas/ErrorResponse'
-  /admin/message_otp:
+  /admin/message_sms:
     get:
       tags:
         - Message Filter
