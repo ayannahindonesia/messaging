@@ -30,7 +30,6 @@ CREATE TABLE "messagings" (
 CREATE TABLE "users" (
     "id" bigserial,
     "username" varchar(255) UNIQUE,
-    "email" varchar(255) UNIQUE,
     "password" text NOT NULL,
     "created_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
     "updated_time" timestamptz DEFAULT CURRENT_TIMESTAMP,

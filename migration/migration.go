@@ -44,7 +44,6 @@ func GetUsersSeed() (mod []models.Users) {
 		models.Users{
 			Username: "adminkey",
 			Password: "adminsecret",
-			Email:    "admin@ayannah.com",
 		},
 		// models.Users{
 		// 	Username: "smsotp",
@@ -87,9 +86,9 @@ func Seed() {
 		messagings := []models.Messaging{
 			GetMessageSeedSuccess(),
 			GetMessageSeedFailed(),
-			models.Messaging{
-				Partner: "OtherPartner",
-			},
+			// models.Messaging{
+			// 	Partner: "OtherPartner",
+			// },
 		}
 		for _, messaging := range messagings {
 			messaging.Create()
@@ -125,12 +124,12 @@ func TestSeed() {
 		}
 
 		messagings := []models.Messaging{
-			models.Messaging{
-				Partner: "adsmedia",
-			},
-			models.Messaging{
-				Partner: "Partner",
-			},
+			// models.Messaging{
+			// 	Partner: "adsmedia",
+			// },
+			// models.Messaging{
+			// 	Partner: "Partner",
+			// },
 			GetMessageSeedSuccess(),
 			GetMessageSeedFailed(),
 		}
@@ -138,10 +137,10 @@ func TestSeed() {
 			messaging.Create()
 		}
 
-		//seed users
-		for _, users := range GetUsersSeed() {
-			users.Create()
-		}
+		//seed users :
+		// for _, users := range GetUsersSeed() {
+		// 	users.Create()
+		// }
 	}
 }
 

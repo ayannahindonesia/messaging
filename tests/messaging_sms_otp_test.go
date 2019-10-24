@@ -29,7 +29,7 @@ func TestMessageOTPSend(t *testing.T) {
 		req.WithHeader("Authorization", "Basic "+clientBasicToken) //adminBasicToken
 	})
 
-	clientToken := getClientLoginToken(e, auth, "1")
+	clientToken := getClientLoginToken(e, auth, "0")
 
 	auth = e.Builder(func(req *httpexpect.Request) {
 		req.WithHeader("Authorization", "Bearer "+clientToken)
@@ -47,13 +47,13 @@ func TestMessageOTPSend(t *testing.T) {
 	}
 
 	// expect valid response
-	auth.POST("/admin/message_sms_send").
+	auth.POST("/client/message_sms_send").
 		WithJSON(payload).
 		Expect().
 		Status(http.StatusOK).
 		JSON().
 		Object()
-	auth.POST("/admin/message_sms_send").WithJSON(nil).
+	auth.POST("/client/message_sms_send").WithJSON(nil).
 		Expect().
 		Status(http.StatusUnprocessableEntity).
 		JSON().
@@ -75,7 +75,7 @@ func TestMessageOTPList(t *testing.T) {
 		req.WithHeader("Authorization", "Basic "+clientBasicToken)
 	})
 
-	clientToken := getClientLoginToken(e, auth, "0")
+	clientToken := getAdminLoginToken(e, auth, "1")
 
 	auth = e.Builder(func(req *httpexpect.Request) {
 		req.WithHeader("Authorization", "Bearer "+clientToken)

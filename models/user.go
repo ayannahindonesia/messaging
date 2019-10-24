@@ -8,7 +8,6 @@ import (
 type Users struct {
 	basemodel.BaseModel
 	Username string `json:"username" gorm:"column:username;type:varchar(255);unique;not null"`
-	Email    string `json:"email" gorm:"column:email;type:varchar(255);unique;not null"`
 	Password string `json:"password" gorm:"column:password;type:text;not null"`
 }
 

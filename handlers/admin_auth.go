@@ -15,7 +15,7 @@ import (
 
 type (
 	AdminLoginCreds struct {
-		Username string `json:"key"`
+		Key      string `json:"key"`
 		Password string `json:"password"`
 	}
 )
@@ -33,7 +33,7 @@ func AdminLogin(c echo.Context) error {
 	)
 
 	rules := govalidator.MapData{
-		"username": []string{"required"},
+		"key":      []string{"required"},
 		"password": []string{"required"},
 	}
 
@@ -43,8 +43,7 @@ func AdminLogin(c echo.Context) error {
 	}
 
 	// check if theres record
-	validKey = messaging.App.DB.Where("username = ?", credentials.Username).Find(&user).RecordNotFound()
-
+	validKey = messaging.App.DB.Where("username = ?", credentials.Key).Find(&user).RecordNotFound()
 	if !validKey { // check the password
 		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(credentials.Password))
 		if err != nil {
