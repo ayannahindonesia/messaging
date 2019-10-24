@@ -38,6 +38,30 @@ func GetMessageSeedFailed() (mod models.Messaging) {
 		RawResponse:  "{\"sending_respon\":[{\"globalstatus\":10,\"globalstatustext\":\"Success\",\"datapacket\":[{\"packet\":{\"number\":\"6282297335657\",\"sendingid\":1287265,\"sendingstatus\":60,\"sendingstatustext\":\"Invalid Number\",\"price\":320}}]}]}",
 	}
 }
+
+func GetUsersSeed() (mod []models.Users) {
+	return []models.Users{
+		models.Users{
+			Username: "adminkey",
+			Password: "adminsecret",
+		},
+		// models.Users{
+		// 	Username: "smsotp",
+		// 	Password: "P@ssw0rd",
+		// 	Email:    "smsotp@ayannah.com",
+		// },
+		// models.Users{
+		// 	Username: "lendernotif",
+		// 	Password: "P@ssw0rd",
+		// 	Email:    "lendernotif@ayannah.com",
+		// },
+		// models.Users{
+		// 	Username: "borrowernotif",
+		// 	Password: "P@ssw0rd",
+		// 	Email:    "borrowernotif@ayannah.com",
+		// },
+	}
+}
 func Seed() {
 	if messaging.App.ENV == "development" {
 		// seed clients
@@ -62,13 +86,19 @@ func Seed() {
 		messagings := []models.Messaging{
 			GetMessageSeedSuccess(),
 			GetMessageSeedFailed(),
-			models.Messaging{
-				Partner: "OtherPartner",
-			},
+			// models.Messaging{
+			// 	Partner: "OtherPartner",
+			// },
 		}
 		for _, messaging := range messagings {
 			messaging.Create()
 		}
+
+		//seed users
+		for _, users := range GetUsersSeed() {
+			users.Create()
+		}
+
 	}
 }
 
@@ -94,12 +124,12 @@ func TestSeed() {
 		}
 
 		messagings := []models.Messaging{
-			models.Messaging{
-				Partner: "adsmedia",
-			},
-			models.Messaging{
-				Partner: "Partner",
-			},
+			// models.Messaging{
+			// 	Partner: "adsmedia",
+			// },
+			// models.Messaging{
+			// 	Partner: "Partner",
+			// },
 			GetMessageSeedSuccess(),
 			GetMessageSeedFailed(),
 		}
@@ -107,6 +137,10 @@ func TestSeed() {
 			messaging.Create()
 		}
 
+		//seed users :
+		// for _, users := range GetUsersSeed() {
+		// 	users.Create()
+		// }
 	}
 }
 
