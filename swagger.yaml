@@ -57,7 +57,86 @@ paths:
                 type: object
                 allOf:
                   - $ref: '#/components/schemas/ErrorResponse'
-  /client/message_otp:
+  /client/admin_login:
+    post:
+      tags:
+        - Admin
+      summary: login for get admin token for accessing /admin/messaging_sms
+      parameters:
+        - $ref: '#/components/parameters/authtoken'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/adminLoginRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/jwtResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+  
+  /client/message_otp_send:
+    post:
+      tags:
+        - Message
+      summary: send sms to target phone number with custom message 
+      parameters:
+        - $ref: '#/components/parameters/authtoken'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendSMS'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/SendSMSResponse'
+        '401':
+          description: Unauthorized
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+  /admin/message_otp:
     get:
       tags:
         - Message Filter
@@ -121,46 +200,6 @@ paths:
                 type: object
                 allOf:
                   - $ref: '#/components/schemas/ErrorResponse'
-  /client/message_otp_send:
-    post:
-      tags:
-        - Message
-      summary: send sms to target phone number with custom message 
-      parameters:
-        - $ref: '#/components/parameters/authtoken'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SendSMS'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                allOf:
-                  - $ref: '#/components/schemas/SendSMSResponse'
-        '401':
-          description: Unauthorized
-        '422':
-          description: Unprocessable Entity
-          content:
-            application/json:
-              schema:
-                type: object
-                allOf:
-                  - $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                allOf:
-                  - $ref: '#/components/schemas/ErrorResponse'
-  
 components:
   schemas:
     jwtResponse:
@@ -213,6 +252,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SendSMSResponse'
+    adminLoginRequest:
+      properties:
+        key:
+          type: string
+          example: adminlogin
+        password:
+          type: string
+          example: password
     SendSMSResponse: 
       type: object
       properties:
