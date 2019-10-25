@@ -25,7 +25,8 @@ func MessageNotificationSend(c echo.Context) error {
 	start := time.Now()
 	//firebase init
 	ctx := context.Background()
-	app, err := firebase.NewApp(ctx, nil)
+	config := &firebase.Config{ProjectID: "asira-app-33ed7"}
+	app, err := firebase.NewApp(ctx, config)
 	if err != nil {
 		log.Fatalf("error initializing app: %v\n", err)
 	}
@@ -36,13 +37,17 @@ func MessageNotificationSend(c echo.Context) error {
 	}
 
 	// This registration token comes from the client FCM SDKs.
-	registrationToken := "YOUR_REGISTRATION_TOKEN"
+	registrationToken := "cEh41s_l_t4:APA91bGaE1OLrCN0P3myiSslwtddtmZMDj4uy_0YbJJ3qvt_N_f81HdxJL5juuuud18OW3zfKZqLDMbn83O1EoBBhGHvJMKupupb5CUsSaWc9A4b6bItmDEctwZ3F-5ENoJfHPZP4NMn"
 
 	// See documentation on defining a message payload.
 	message := &messaging.Message{
 		Data: map[string]string{
 			"score": "850",
 			"time":  "2:45",
+		},
+		Notification: &messaging.Notification{
+			Title: "Olla Kevin",
+			Body:  "hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai ",
 		},
 		Token: registrationToken,
 	}
@@ -58,7 +63,7 @@ func MessageNotificationSend(c echo.Context) error {
 	elapsed := time.Since(start)
 	log.Printf("Execution time took : %s", elapsed)
 
-	return c.JSON(http.StatusOK, nil)
+	return c.JSON(http.StatusOK, response)
 }
 
 func MessageNotificationList(c echo.Context) error {
