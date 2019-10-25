@@ -20,10 +20,8 @@ func MessageOTPSend(c echo.Context) error {
 	token := user.(*jwt.Token)
 	claims := token.Claims.(jwt.MapClaims)
 	clientID, _ := strconv.Atoi(claims["jti"].(string))
-	//get messaging model
-	messaging := models.Messaging{}
 
-	//TODO: OTP generate 6 digit value
+	messaging := models.Messaging{}
 	payloadRules := govalidator.MapData{
 		"phone_number": []string{"required"}, //TODO:, "id_phonenumber"
 		"message":      []string{"required"},
@@ -32,6 +30,7 @@ func MessageOTPSend(c echo.Context) error {
 	if validate != nil {
 		return returnInvalidResponse(http.StatusUnprocessableEntity, validate, "validation error")
 	}
+
 	//build otp request to partner
 	number := messaging.PhoneNumber
 	message := messaging.Message
@@ -42,6 +41,7 @@ func MessageOTPSend(c echo.Context) error {
 	if err != nil {
 		return returnInvalidResponse(http.StatusInternalServerError, err, "")
 	}
+
 	//get response from parsing json API partner
 	status, err := partner.GetStatusResponse(response)
 	/*
@@ -57,12 +57,14 @@ func MessageOTPSend(c echo.Context) error {
 	} else {
 		messaging.ErrorMessage = err.Error()
 	}
+
 	//TODO: dinamic partner setting
 	messaging.Partner = "adsmedia"
 	//raw response from API partner
 	messaging.RawResponse = string(response)
 	//clientID from jwt
 	messaging.ClientID = clientID
+
 	//DONE: storing models
 	err = messaging.Create()
 	if err != nil {
