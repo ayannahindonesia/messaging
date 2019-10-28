@@ -50,7 +50,7 @@ func TestMessageNotificationSend(t *testing.T) {
 		Expect().
 		Status(http.StatusOK).
 		JSON().
-		String()
+		Object()
 	auth.POST("/client/message_notification_send").WithJSON(nil).
 		Expect().
 		Status(http.StatusUnprocessableEntity).

@@ -105,6 +105,7 @@ func MessageNotificationSend(c echo.Context) error {
 
 	//storing
 	notification.ClientID = clientID
+	notification.Response = response
 	err = notification.Create()
 	if err != nil {
 		return returnInvalidResponse(http.StatusInternalServerError, err, "Gagal menyimpan notifikasi")
@@ -114,7 +115,7 @@ func MessageNotificationSend(c echo.Context) error {
 	elapsed := time.Since(start)
 	log.Printf("Execution time took : %s", elapsed)
 
-	return c.JSON(http.StatusOK, response)
+	return c.JSON(http.StatusOK, notification)
 }
 
 func MessageNotificationList(c echo.Context) error {

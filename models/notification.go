@@ -13,10 +13,10 @@ type (
 		Title       string `json:"title" gorm:"column:title"`
 		MessageBody string `json:"message_body" gorm:"column:message_body"`
 		//TODO: to get from client device
-		FirebaseToken string `json:"firebase_token" gorm:"column:firebase_token""`
-		//TODO: "direct", "promotion", "failed"; ALLOW NULL
-		Topic    string    `json:"topic" gorm:"column:topic"`
-		SendTime time.Time `json:"send_time" gorm:"column:send_time" sql:"DEFAULT:current_timestamp"`
+		FirebaseToken string    `json:"firebase_token" gorm:"column:firebase_token""`
+		Topic         string    `json:"topic" gorm:"column:topic"`
+		Response      string    `json:"response" gorm:"column:response"`
+		SendTime      time.Time `json:"send_time" gorm:"column:send_time" sql:"DEFAULT:current_timestamp"`
 	}
 )
 

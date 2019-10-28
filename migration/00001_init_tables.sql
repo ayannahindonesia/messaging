@@ -34,6 +34,7 @@ CREATE TABLE "notifications" (
     "message_body" text,
     "firebase_token" varchar(255),
     "topic" varchar(125),
+    "response" varchar(255),
     "send_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
     "created_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
     "updated_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
