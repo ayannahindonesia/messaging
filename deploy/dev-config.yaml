@@ -12,6 +12,8 @@ development:
     sslmode: disable
     logmode: true
     timezone: Asia/Jakarta
+  push_notification: 
+    project_id: "asira-app-33ed7"
   partners:
     adsmedia:
       host_url: "https://sms241.xyz/sms/api_sms_masking_send_json.php"

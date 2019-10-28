@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"log"
+	messaging_notif "messaging/messaging"
 	"messaging/models"
 	"net/http"
 	"strconv"
@@ -26,7 +28,8 @@ func MessageNotificationSend(c echo.Context) error {
 	//firebase init
 	//TODO: config init.go
 	ctx := context.Background()
-	config := &firebase.Config{ProjectID: "asira-app-33ed7"}
+	projectID := messaging_notif.App.Config.GetStringMap(fmt.Sprintf("%s.push_notification", messaging_notif.App.ENV))
+	config := &firebase.Config{ProjectID: projectID["project_id"].(string)} //"asira-app-33ed7"
 	app, err := firebase.NewApp(ctx, config)
 	if err != nil {
 		log.Fatalf("error initializing app: %v\n", err)
