@@ -24,6 +24,7 @@ func MessageNotificationSend(c echo.Context) error {
 	//messaging_model := models.Messaging{}
 	start := time.Now()
 	//firebase init
+	//TODO: config init.go
 	ctx := context.Background()
 	config := &firebase.Config{ProjectID: "asira-app-33ed7"}
 	app, err := firebase.NewApp(ctx, config)
