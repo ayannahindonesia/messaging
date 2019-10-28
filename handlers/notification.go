@@ -103,6 +103,12 @@ func MessageNotificationSend(c echo.Context) error {
 		}
 	}
 
+	//storing
+	notification.ClientID = clientID
+	err = notification.Create()
+	if err != nil {
+		return returnInvalidResponse(http.StatusInternalServerError, err, "Gagal menyimpan notifikasi")
+	}
 	// Response is a message ID string.
 	log.Println("Successfully sent message: ", response, clientID)
 	elapsed := time.Since(start)

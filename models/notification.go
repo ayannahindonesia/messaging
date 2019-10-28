@@ -15,11 +15,8 @@ type (
 		//TODO: to get from client device
 		FirebaseToken string `json:"firebase_token" gorm:"column:firebase_token""`
 		//TODO: "direct", "promotion", "failed"; ALLOW NULL
-		Topic string `json:"topic" gorm:"column:topic"`
-		//NOTE:from FCM
-		Status       string    `json:"status" gorm:"column:status"`
-		ErrorMessage string    `json:"error_message" gorm:"column:error_message"`
-		SendTime     time.Time `json:"send_time" gorm:"column:send_time" sql:"DEFAULT:current_timestamp"`
+		Topic    string    `json:"topic" gorm:"column:topic"`
+		SendTime time.Time `json:"send_time" gorm:"column:send_time" sql:"DEFAULT:current_timestamp"`
 	}
 )
 
