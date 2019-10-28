@@ -13,7 +13,7 @@ type (
 		Title       string `json:"title" gorm:"column:title"`
 		MessageBody string `json:"message_body" gorm:"column:message_body"`
 		//TODO: to get from client device
-		RegistrationToken string `json:"registration_token" gorm:"column:registration_token"`
+		FirebaseToken string `json:"firebase_token" gorm:"column:firebase_token""`
 		//TODO: "direct", "promotion", "failed"; ALLOW NULL
 		Topic string `json:"topic" gorm:"column:topic"`
 		//NOTE:from FCM

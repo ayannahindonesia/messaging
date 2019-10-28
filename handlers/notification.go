@@ -12,19 +12,12 @@ import (
 
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/messaging"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
+	"github.com/thedevsaddam/govalidator"
 )
 
-func MessageNotificationSend(c echo.Context) error {
-	defer c.Request().Body.Close()
-	//get user id
-	// user := c.Get("user")
-	// token := user.(*jwt.Token)
-	// claims := token.Claims.(jwt.MapClaims)
-	//clientID, _ := strconv.Atoi(claims["jti"].(string))
-	//get messaging model
-	//messaging_model := models.Messaging{}
-	start := time.Now()
+func getPushNotifClient() (context.Context, *messaging.Client, error) {
 	//firebase init
 	//TODO: config init.go
 	ctx := context.Background()
@@ -32,38 +25,86 @@ func MessageNotificationSend(c echo.Context) error {
 	config := &firebase.Config{ProjectID: projectID["project_id"].(string)} //"asira-app-33ed7"
 	app, err := firebase.NewApp(ctx, config)
 	if err != nil {
-		log.Fatalf("error initializing app: %v\n", err)
+		return ctx, &messaging.Client{}, err
 	}
 	// Obtain a messaging.Client from the App.
 	client, err := app.Messaging(ctx)
 	if err != nil {
-		log.Fatalf("error getting Messaging client: %v\n", err)
+		return ctx, &messaging.Client{}, err
+	}
+	return ctx, client, nil
+}
+func MessageNotificationSend(c echo.Context) error {
+	defer c.Request().Body.Close()
+	//get user id
+	user := c.Get("user")
+	token := user.(*jwt.Token)
+	claims := token.Claims.(jwt.MapClaims)
+	clientID, _ := strconv.Atoi(claims["jti"].(string))
+	//internal benchmark
+	start := time.Now()
+
+	//get messaging model & validate
+	notification := models.Notification{}
+	payloadRules := govalidator.MapData{
+		"title":        []string{"required"},
+		"message_body": []string{"required"},
+	}
+	validate := validateRequestPayload(c, payloadRules, &notification)
+	if validate != nil {
+		return returnInvalidResponse(http.StatusUnprocessableEntity, validate, "validation error")
+	}
+	//check payload Topic / RegistrationToken must have value
+	if len(notification.Topic) != 0 && len(notification.FirebaseToken) != 0 {
+		return returnInvalidResponse(http.StatusUnprocessableEntity, validate, "Topic Or RegistrationToken must have value")
 	}
 
-	// This registration token comes from the client FCM SDKs.
-	registrationToken := "cEh41s_l_t4:APA91bGaE1OLrCN0P3myiSslwtddtmZMDj4uy_0YbJJ3qvt_N_f81HdxJL5juuuud18OW3zfKZqLDMbn83O1EoBBhGHvJMKupupb5CUsSaWc9A4b6bItmDEctwZ3F-5ENoJfHPZP4NMn"
+	//registrationToken := notification.RegistrationToken //"cEh41s_l_t4:APA91bGaE1OLrCN0P3myiSslwtddtmZMDj4uy_0YbJJ3qvt_N_f81HdxJL5juuuud18OW3zfKZqLDMbn83O1EoBBhGHvJMKupupb5CUsSaWc9A4b6bItmDEctwZ3F-5ENoJfHPZP4NMn"
 
-	// See documentation on defining a message payload.
-	message := &messaging.Message{
-		Data: map[string]string{
-			"score": "850",
-			"time":  "2:45",
-		},
-		Notification: &messaging.Notification{
-			Title: "Olla Kevin",
-			Body:  "hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai hai ",
-		},
-		Token: registrationToken,
-	}
-
-	// Send a message to the device corresponding to the provided
-	// registration token.
-	response, err := client.Send(ctx, message)
+	//get FCM
+	ctx, client, err := getPushNotifClient()
 	if err != nil {
-		log.Fatalln(err)
+		returnInvalidResponse(http.StatusInternalServerError, nil, fmt.Sprintf("error initializing app: %v\n", err))
 	}
+
+	//var message messaging.Message
+	var response string
+	//send by RegistrationToken
+	if len(notification.FirebaseToken) != 0 {
+		message := &messaging.Message{
+			Notification: &messaging.Notification{
+				Title: notification.Title,
+				Body:  notification.MessageBody,
+			},
+			Token: notification.FirebaseToken,
+		}
+		// Send a message to the device corresponding to the provided
+		// registration token.
+		response, err = client.Send(ctx, message)
+		if err != nil {
+			return returnInvalidResponse(http.StatusInternalServerError, validate, err.Error())
+		}
+	}
+
+	//send by Topic
+	if len(notification.Topic) != 0 {
+		message := &messaging.Message{
+			Notification: &messaging.Notification{
+				Title: notification.Title,
+				Body:  notification.MessageBody,
+			},
+			Topic: notification.Topic,
+		}
+		// Send a message to the device corresponding to the provided
+		// registration token.
+		response, err = client.Send(ctx, message)
+		if err != nil {
+			return returnInvalidResponse(http.StatusInternalServerError, validate, err.Error())
+		}
+	}
+
 	// Response is a message ID string.
-	log.Println("Successfully sent message: ", response)
+	log.Println("Successfully sent message: ", response, clientID)
 	elapsed := time.Since(start)
 	log.Printf("Execution time took : %s", elapsed)
 
