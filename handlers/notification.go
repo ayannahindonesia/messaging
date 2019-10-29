@@ -55,8 +55,8 @@ func MessageNotificationSend(c echo.Context) error {
 		return returnInvalidResponse(http.StatusUnprocessableEntity, validate, "validation error")
 	}
 	//check payload Topic / RegistrationToken must have value
-	if len(notification.Topic) != 0 && len(notification.FirebaseToken) != 0 {
-		return returnInvalidResponse(http.StatusUnprocessableEntity, validate, "Topic Or RegistrationToken must have value")
+	if len(notification.Topic) == 0 && len(notification.FirebaseToken) == 0 {
+		return returnInvalidResponse(http.StatusUnprocessableEntity, validate, "Topic Or FirebaseToken must have value")
 	}
 
 	//registrationToken := notification.RegistrationToken //"cEh41s_l_t4:APA91bGaE1OLrCN0P3myiSslwtddtmZMDj4uy_0YbJJ3qvt_N_f81HdxJL5juuuud18OW3zfKZqLDMbn83O1EoBBhGHvJMKupupb5CUsSaWc9A4b6bItmDEctwZ3F-5ENoJfHPZP4NMn"
