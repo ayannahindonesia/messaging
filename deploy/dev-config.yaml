@@ -1,0 +1,40 @@
+development:
+  react_cors: true
+  database:
+    table: asira_messaging
+    username: asirauser
+    password: asirapass
+    host: postgres_db
+    port: "5432"
+    maxlifetime: 30
+    idle_conns: 10
+    open_conns: 100
+    sslmode: disable
+    logmode: true
+    timezone: Asia/Jakarta
+  partners:
+    adsmedia:
+      host_url: "https://sms241.xyz/sms/api_sms_masking_send_json.php"
+      api_key: "7a8f16c956ae0c1e50461972d972d228"
+  # kafka:
+  #   host: kafka
+  #   port: "9092"
+  #   user: asirauser
+  #   pass: asirapass
+  #   client_id: asira
+  #   sasl: false
+  #   log_verbose: true
+  #   topics:
+  #     produces:
+  #       for_borrower: asira_messaging_to_borrower
+  #       for_lender: asira_messaging_to_lender
+  #     consumes:
+  #       for_borrower: asira_borrower_to_messaging
+  #       for_lender: asira_lender_to_messaging
+  jwt:
+    duration: 10080 # in minutes
+    jwt_secret: sXQ8jUMpueOvN5P3cdCR
+
+staging:
+
+production:
