@@ -5,8 +5,63 @@ import (
 	"messaging/messaging"
 	"messaging/models"
 	"strings"
+	"time"
 )
 
+func GetMessageSeedSuccess() (mod models.Messaging) {
+	layout := "2019-10-23 04:40:08.034983+00"
+	str := "2019-10-23 04:40:08.034983+00"
+	t, _ := time.Parse(layout, str)
+	return models.Messaging{
+		ClientID:     2,
+		Partner:      "adsmedia",
+		PhoneNumber:  "081134567892",
+		Message:      "kode otp anda 126236",
+		Status:       "success",
+		ErrorMessage: "",
+		SendTime:     t,
+		RawResponse:  "{\"sending_respon\":[{\"globalstatus\":10,\"globalstatustext\":\"Success\",\"datapacket\":[{\"packet\":{\"number\":\"6282297335657\",\"sendingid\":1287265,\"sendingstatus\":10,\"sendingstatustext\":\"success\",\"price\":320}}]}]}",
+	}
+}
+func GetMessageSeedFailed() (mod models.Messaging) {
+	layout := "2019-10-23 04:40:08.034983+00"
+	str := "2019-10-23 04:40:08.034983+00"
+	t, _ := time.Parse(layout, str)
+	return models.Messaging{
+		ClientID:     2,
+		Partner:      "adsmedia",
+		PhoneNumber:  "081134567892",
+		Message:      "kode otp anda 126236",
+		Status:       "failed",
+		ErrorMessage: "Invalid Number",
+		SendTime:     t,
+		RawResponse:  "{\"sending_respon\":[{\"globalstatus\":10,\"globalstatustext\":\"Success\",\"datapacket\":[{\"packet\":{\"number\":\"6282297335657\",\"sendingid\":1287265,\"sendingstatus\":60,\"sendingstatustext\":\"Invalid Number\",\"price\":320}}]}]}",
+	}
+}
+
+func GetUsersSeed() (mod []models.Users) {
+	return []models.Users{
+		models.Users{
+			Username: "adminkey",
+			Password: "adminsecret",
+		},
+		// models.Users{
+		// 	Username: "smsotp",
+		// 	Password: "P@ssw0rd",
+		// 	Email:    "smsotp@ayannah.com",
+		// },
+		// models.Users{
+		// 	Username: "lendernotif",
+		// 	Password: "P@ssw0rd",
+		// 	Email:    "lendernotif@ayannah.com",
+		// },
+		// models.Users{
+		// 	Username: "borrowernotif",
+		// 	Password: "P@ssw0rd",
+		// 	Email:    "borrowernotif@ayannah.com",
+		// },
+	}
+}
 func Seed() {
 	if messaging.App.ENV == "development" {
 		// seed clients
@@ -29,16 +84,21 @@ func Seed() {
 		}
 
 		messagings := []models.Messaging{
-			models.Messaging{
-				Partner: "adsmedia",
-			},
-			models.Messaging{
-				Partner: "Partner",
-			},
+			GetMessageSeedSuccess(),
+			GetMessageSeedFailed(),
+			// models.Messaging{
+			// 	Partner: "OtherPartner",
+			// },
 		}
 		for _, messaging := range messagings {
 			messaging.Create()
 		}
+
+		//seed users
+		for _, users := range GetUsersSeed() {
+			users.Create()
+		}
+
 	}
 }
 
@@ -64,17 +124,23 @@ func TestSeed() {
 		}
 
 		messagings := []models.Messaging{
-			models.Messaging{
-				Partner: "adsmedia",
-			},
-			models.Messaging{
-				Partner: "Partner",
-			},
+			// models.Messaging{
+			// 	Partner: "adsmedia",
+			// },
+			// models.Messaging{
+			// 	Partner: "Partner",
+			// },
+			GetMessageSeedSuccess(),
+			GetMessageSeedFailed(),
 		}
 		for _, messaging := range messagings {
 			messaging.Create()
 		}
 
+		//seed users :
+		// for _, users := range GetUsersSeed() {
+		// 	users.Create()
+		// }
 	}
 }
 

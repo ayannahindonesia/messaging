@@ -3,6 +3,7 @@ package partner
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -17,6 +18,42 @@ import (
 type (
 	Config map[string]interface{}
 )
+
+//NOTE: expected return value from API partner
+/*{
+	"sending_respon":[
+		{
+			"globalstatus":10,
+			"globalstatustext":"Success",
+			"datapacket":[
+				{
+					"packet":{
+						"number":"1",
+						"sendingid":0,
+						"sendingstatus":60,
+						"sendingstatustext":"Invalid Number",
+						"price":0
+					}
+				}
+			]
+		}
+	]
+}*/
+type ResponseType struct {
+	SendingRespon []struct {
+		GlobalStatus     int    `json:"globalstatus"`
+		GlobalStatusText string `json:"globalstatustext"`
+		DataPacket       []struct {
+			Packet struct {
+				Number            string `json:"number"`
+				SendingID         int    `json:"sendingid"`
+				SendingStatus     int    `json:"sendingstatus"`
+				SendingStatusText string `json:"sendingstatustext"`
+				Price             int    `json:"price"`
+			} `json:"packet"`
+		} `json:"datapacket"`
+	} `json:"sending_respon"`
+}
 
 //const URLendpoint string = "http://sms241.xyz/sms/api_sms_otp_send_json.php" // mahal
 //const URLendpoint string = "http://sms241.xyz/sms/api_sms_masking_send_json.php" //agak mahal
@@ -48,8 +85,8 @@ func Send(con Config) (body []byte, err error) {
 					"phone_number": "%s",
 					"message": "%s",
 					"partner": "adsmedia",
-					"raw_response": ""{\"sending_respon\":[{\"globalstatus\":10,\"globalstatustext\":\"Success\",\"datapacket\":[{\"packet\":{\"number\":\"6282297335657\",\"sendingid\":1287265,\"sendingstatus\":10,\"sendingstatustext\":\"success\",\"price\":320}}]}]}",
-					"status": true,
+					"raw_response": "{\"sending_respon\":[{\"globalstatus\":10,\"globalstatustext\":\"Success\",\"datapacket\":[{\"packet\":{\"number\":\"6282297335657\",\"sendingid\":1287265,\"sendingstatus\":10,\"sendingstatustext\":\"success\",\"price\":320}}]}]}",
+					"status": "success",
 					"send_time": "2019-10-21T12:34:28.726458+07:00"
 				}`, PayloadSmsOTP["phone_number"], PayloadSmsOTP["message"])
 				fmt.Println(result)
@@ -94,4 +131,23 @@ func PrepareRequestData(phoneNumber string, message string) (con Config) {
 		"datapacket":  data,
 	}
 	return conf
+}
+
+func GetStatusResponse(response []byte) (status string, errmsg error) {
+	var responseObj ResponseType
+	//defer responseObj
+	log.Printf("RES : %s", response)
+	//parsing json
+	err := json.Unmarshal(response, &responseObj)
+	if err != nil {
+		return "Invalid Number", err
+	}
+	//res := responseObj["sending_respon"].(map[string]interface{})
+	//err = json.Unmarshal(responseObj["sending_respon"].([]byte), &res)
+	log.Printf("%+v", responseObj)
+	if responseObj.SendingRespon[0].DataPacket[0].Packet.SendingStatus != 10 {
+		log.Printf("%+v", responseObj)
+		return "failed", errors.New(responseObj.SendingRespon[0].DataPacket[0].Packet.SendingStatusText)
+	}
+	return "success", nil
 }

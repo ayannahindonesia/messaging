@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"messaging/messaging"
+	"strings"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -95,4 +96,15 @@ func RandString(n int) string {
 		b[i] = letterBytes[rand.Intn(len(letterBytes))]
 	}
 	return string(b)
+}
+
+func customSplit(str string, separator string) []string {
+	split := strings.Split(str, separator)
+	if len(split) == 1 {
+		if split[0] == "" {
+			split = []string{}
+		}
+	}
+
+	return split
 }
