@@ -57,43 +57,18 @@ paths:
                 type: object
                 allOf:
                   - $ref: '#/components/schemas/ErrorResponse'
-  /client/message_otp:
-    get:
+  /client/admin_login:
+    post:
       tags:
-        - Message Filter
-      summary: get sms from stored OTP message 
+        - Admin
+      summary: login for get admin token for accessing /admin/messaging_sms
       parameters:
         - $ref: '#/components/parameters/authtoken'
-        - in: query
-          name: id
-          schema:
-            type: integer
-            example: 2
-        - in: query
-          name: client_id
-          schema:
-            type: integer
-            example: 3
-        - in: query
-          name: phone_number
-          schema:
-            type: string
-            example: 0822
-        - in: query
-          name: message
-          schema:
-            type: string
-            example: "this your OTP code 123456"
-        - in: query
-          name: status
-          schema:
-            type: string
-            example: "success"
-        - in: query
-          name: send_time
-          schema:
-            type: string
-            example: "2019-10-21T18:43:43.984573+07:00"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/adminLoginRequest'
       responses:
         '200':
           description: OK
@@ -102,17 +77,17 @@ paths:
               schema:
                 type: object
                 allOf:
-                  - $ref: '#/components/schemas/MessageOTPList'
-        '401':
-          description: Unauthorized
-        '422':
-          description: Unprocessable Entity
+                  - $ref: '#/components/schemas/jwtResponse'
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
                 type: object
                 allOf:
                   - $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
         '500':
           description: Internal Server Error
           content:
@@ -121,7 +96,8 @@ paths:
                 type: object
                 allOf:
                   - $ref: '#/components/schemas/ErrorResponse'
-  /client/message_otp_send:
+  
+  /client/message_sms_send:
     post:
       tags:
         - Message
@@ -160,7 +136,84 @@ paths:
                 type: object
                 allOf:
                   - $ref: '#/components/schemas/ErrorResponse'
-  
+  /admin/message_sms:
+    get:
+      tags:
+        - Admin
+      summary: login for get admin token for accessing /admin/messaging_sms
+      parameters:
+        - $ref: '#/components/parameters/authtoken'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/adminLoginRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/jwtResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+  /client/message_notification_send:
+    post:
+      tags:
+        - Notification
+      summary: send notification to firebase cloud message (FCM) by topic and/or firebase token 
+      parameters:
+        - $ref: '#/components/parameters/authtoken'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendNotification'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/SendNotificationResponse'
+        '401':
+          description: Unauthorized
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     jwtResponse:
@@ -188,6 +241,21 @@ components:
         message:
           type: string
           example: this is your OTP message 011235
+    SendNotification: 
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Your Loan Applied has been Aproved"
+        message_body:
+          type: string
+          example: "{\"status\":\"aproved\",\"product\":\"1276216\"}"
+        firebase_token: 
+          type: string
+          example: "cEh41s_l_t4:APA91bGaE1OLrCN0P3myiSslwtddtmZMDj4uy_0YbJJ3qvt_N_f81HdxJL5juuuud18OW3zfKZqLDMbn83O1EoBBhGHvJMKupupb5CUsSaWc9A4b6bItmDEctwZ3F-5ENoJfHPZP4NMn"
+        topic: 
+          type: string
+          example: "promosi"
     MessageOTPList:
       type: object
       properties:
@@ -213,6 +281,47 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SendSMSResponse'
+    adminLoginRequest:
+      properties:
+        key:
+          type: string
+          example: adminlogin
+        password:
+          type: string
+          example: password
+    SendNotificationResponse: 
+      type: object
+      properties:
+        id:
+          type: number
+          example: 4
+        created_time:
+          type: string
+          example: "2019-10-28T11:36:57.960235Z"
+        updated_time:
+          type: string
+          example: "2019-10-28T11:36:57.960235Z"
+        client_id:
+          type: number
+          example: 2
+        title:
+          type: number
+          example: "Your Loan Applied has been Aproved"
+        message:
+          type: string
+          example:  "{\"status\":\"aproved\",\"product\":\"1276216\"}"
+        firebase_token:
+          type: string
+          example: "cEh41s_l_t4:APA91bGaE1OLrCN0P3myiSslwtddtmZMDj4uy_0YbJJ3qvt_N_f81HdxJL5juuuud18OW3zfKZqLDMbn83O1EoBBhGHvJMKupupb5CUsSaWc9A4b6bItmDEctwZ3F-5ENoJfHPZP4NMn"
+        topic:
+          type: string
+          example: "promosi"
+        response:
+          type: string
+          example: "projects/asira-app-33ed7/messages/0:1572262618277727%2056f65b2056f65b"
+        send_time:
+          type: string
+          example: "2019-10-28T11:36:57.960235Z"
     SendSMSResponse: 
       type: object
       properties:
