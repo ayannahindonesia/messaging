@@ -17,6 +17,16 @@ import (
 	"github.com/thedevsaddam/govalidator"
 )
 
+type (
+	NotificationPayload struct {
+		Title         string            `json:"title"`
+		MessageBody   string            `json:"message_body"`
+		Data          map[string]string `json:"data"`
+		Topic         string            `json:"topic"`
+		FirebaseToken string            `json:"firebase_token"`
+	}
+)
+
 func getPushNotifClient() (context.Context, *messaging.Client, error) {
 	//firebase init
 	//TODO: config init.go
@@ -45,21 +55,28 @@ func MessageNotificationSend(c echo.Context) error {
 	start := time.Now()
 
 	//get messaging model & validate
-	notification := models.Notification{}
+	notificationPayload := NotificationPayload{}
 	payloadRules := govalidator.MapData{
 		"title":        []string{"required"},
 		"message_body": []string{"required"},
+		"data":         []string{},
 	}
-	validate := validateRequestPayload(c, payloadRules, &notification)
+	validate := validateRequestPayload(c, payloadRules, &notificationPayload)
 	if validate != nil {
 		return returnInvalidResponse(http.StatusUnprocessableEntity, validate, "validation error")
 	}
+
 	//check payload Topic / RegistrationToken must have value
-	if len(notification.Topic) == 0 && len(notification.FirebaseToken) == 0 {
+	if len(notificationPayload.Topic) == 0 && len(notificationPayload.FirebaseToken) == 0 {
 		return returnInvalidResponse(http.StatusUnprocessableEntity, validate, "Topic Or FirebaseToken must have value")
 	}
 
-	//registrationToken := notification.RegistrationToken //"cEh41s_l_t4:APA91bGaE1OLrCN0P3myiSslwtddtmZMDj4uy_0YbJJ3qvt_N_f81HdxJL5juuuud18OW3zfKZqLDMbn83O1EoBBhGHvJMKupupb5CUsSaWc9A4b6bItmDEctwZ3F-5ENoJfHPZP4NMn"
+	//assignment object
+	notification := models.Notification{}
+	notification.Title = notificationPayload.Title
+	notification.MessageBody = notificationPayload.MessageBody
+	notification.Topic = notificationPayload.Topic
+	notification.FirebaseToken = notificationPayload.FirebaseToken
 
 	//get FCM
 	ctx, client, err := getPushNotifClient()
@@ -76,6 +93,7 @@ func MessageNotificationSend(c echo.Context) error {
 				Title: notification.Title,
 				Body:  notification.MessageBody,
 			},
+			Data:  notificationPayload.Data,
 			Token: notification.FirebaseToken,
 		}
 		// Send a message to the device corresponding to the provided
