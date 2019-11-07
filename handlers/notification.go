@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	messaging_notif "messaging/messaging"
@@ -58,7 +59,7 @@ func MessageNotificationSend(c echo.Context) error {
 	notificationPayload := NotificationPayload{}
 	payloadRules := govalidator.MapData{
 		"title":        []string{"required"},
-		"message_body": []string{"required"},
+		"message_body": []string{},
 		"data":         []string{},
 	}
 	validate := validateRequestPayload(c, payloadRules, &notificationPayload)
@@ -86,14 +87,17 @@ func MessageNotificationSend(c echo.Context) error {
 
 	//var message messaging.Message
 	var response string
+	//marshalling object to json
+	marshalledData, _ := json.Marshal(notificationPayload.Data)
+
 	//send by RegistrationToken
 	if len(notification.FirebaseToken) != 0 {
 		message := &messaging.Message{
-			Notification: &messaging.Notification{
-				Title: notification.Title,
-				Body:  notification.MessageBody,
+			Data: map[string]string{
+				"Title":    notification.Title,
+				"Body":     notification.MessageBody,
+				"JsonData": string(marshalledData),
 			},
-			Data:  notificationPayload.Data,
 			Token: notification.FirebaseToken,
 		}
 		// Send a message to the device corresponding to the provided
