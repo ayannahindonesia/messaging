@@ -12,6 +12,7 @@ func AdminGroup(e *echo.Echo) {
 	middlewares.SetClientJWTmiddlewares(g, "admin")
 
 	g.GET("/message_sms", handlers.MessageOTPList)
+	g.GET("/message_notification", handlers.MessageNotificationList)
 	// config info
 	// g.GET("/info", handlers.AsiraAppInfo)
 
