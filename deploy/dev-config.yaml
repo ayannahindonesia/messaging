@@ -4,7 +4,7 @@ development:
     table: asira_messaging
     username: asirauser
     password: asirapass
-    host: "172.18.0.3"
+    host: postgres_db
     port: "5432"
     maxlifetime: 30
     idle_conns: 10

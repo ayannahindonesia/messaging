@@ -58,50 +58,41 @@ func TestMessageNotificationSend(t *testing.T) {
 		Object()
 }
 
-// func TestMessageNotificationList(t *testing.T) {
-// 	RebuildData()
+func TestMessageNotificationList(t *testing.T) {
+	RebuildData()
 
-// 	api := router.NewRouter()
+	api := router.NewRouter()
 
-// 	server := httptest.NewServer(api)
+	server := httptest.NewServer(api)
 
-// 	defer server.Close()
+	defer server.Close()
 
-// 	e := httpexpect.New(t, server.URL)
+	e := httpexpect.New(t, server.URL)
 
-// 	auth := e.Builder(func(req *httpexpect.Request) {
-// 		req.WithHeader("Authorization", "Basic "+clientBasicToken)
-// 	})
+	auth := e.Builder(func(req *httpexpect.Request) {
+		req.WithHeader("Authorization", "Basic "+clientBasicToken)
+	})
 
-// 	clientToken := getAdminLoginToken(e, auth, "1")
+	clientToken := getAdminLoginToken(e, auth, "1")
 
-// 	auth = e.Builder(func(req *httpexpect.Request) {
-// 		req.WithHeader("Authorization", "Bearer "+clientToken)
-// 	})
+	auth = e.Builder(func(req *httpexpect.Request) {
+		req.WithHeader("Authorization", "Bearer "+clientToken)
+	})
 
-// 	// expect valid response
-// 	auth.GET("/admin/message_sms").
-// 		Expect().
-// 		Status(http.StatusOK).
-// 		JSON().
-// 		Object()
+	// expect valid response
+	auth.GET("/admin/message_notification").
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
 
-// 	obj := auth.GET("/admin/message_sms").
-// 		WithQuery("phone_number", "08").
-// 		Expect().
-// 		Status(http.StatusOK).
-// 		JSON().
-// 		Object()
-// 	obj.ContainsKey("data").NotEmpty()
-// 	//log.Printf("%+v", obj)
-
-// 	auth2 := e.Builder(func(req *httpexpect.Request) {
-// 		req.WithHeader("Authorization", "Bearer invalid")
-// 	})
-// 	auth2.GET("/admin/message_sms").
-// 		WithQuery("phone_number", "08").
-// 		Expect().
-// 		Status(http.StatusUnauthorized).
-// 		JSON().
-// 		Object()
-// }
+	auth2 := e.Builder(func(req *httpexpect.Request) {
+		req.WithHeader("Authorization", "Bearer invalid")
+	})
+	auth2.GET("/admin/message_notification").
+		WithQuery("token", "cEh").
+		Expect().
+		Status(http.StatusUnauthorized).
+		JSON().
+		Object()
+}
