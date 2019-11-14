@@ -202,6 +202,7 @@ func ClientMessageNotificationList(c echo.Context) error {
 
 	// filters
 	id, _ := strconv.Atoi(c.QueryParam("id"))
+	recipientID := c.QueryParam("recipient_id")
 	Title := c.QueryParam("title")
 	FirebaseToken := c.QueryParam("token")
 	Topic := c.QueryParam("topic")
@@ -210,6 +211,7 @@ func ClientMessageNotificationList(c echo.Context) error {
 	type Filter struct {
 		ID            int       `json:"id"`
 		ClientID      int       `json:"client_id"`
+		RecipientID   string    `json:"recipient_id"` //NOTE : exact value
 		Title         string    `json:"title" condition:"LIKE"`
 		FirebaseToken string    `json:"firebase_token" condition:"LIKE"`
 		Topic         string    `json:"topic"`
@@ -220,6 +222,7 @@ func ClientMessageNotificationList(c echo.Context) error {
 	result, err := notification.PagedFilterSearch(page, rows, order, sort, &Filter{
 		ID:            id,
 		ClientID:      clientID, //DONE id == jti
+		RecipientID:   recipientID,
 		Title:         Title,
 		FirebaseToken: FirebaseToken,
 		Topic:         Topic,
