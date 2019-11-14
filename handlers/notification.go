@@ -20,6 +20,7 @@ import (
 
 type (
 	NotificationPayload struct {
+		RecipientID   string            `json:"recipient_id"`
 		Title         string            `json:"title"`
 		MessageBody   string            `json:"message_body"`
 		Data          map[string]string `json:"data"`
@@ -59,6 +60,7 @@ func MessageNotificationSend(c echo.Context) error {
 	notificationPayload := NotificationPayload{}
 	payloadRules := govalidator.MapData{
 		"title":        []string{"required"},
+		"recipient_id": []string{},
 		"message_body": []string{},
 		"data":         []string{},
 	}
@@ -74,6 +76,7 @@ func MessageNotificationSend(c echo.Context) error {
 
 	//assignment object
 	notification := models.Notification{}
+	notification.RecipientID = notificationPayload.RecipientID
 	notification.Title = notificationPayload.Title
 	notification.MessageBody = notificationPayload.MessageBody
 	notification.Topic = notificationPayload.Topic
@@ -169,7 +172,7 @@ func MessageNotificationList(c echo.Context) error {
 	notification := models.Notification{}
 	result, err := notification.PagedFilterSearch(page, rows, order, sort, &Filter{
 		ID:            id,
-		ClientID:      ClientID, //TODO id == jti
+		ClientID:      ClientID,
 		Title:         Title,
 		FirebaseToken: FirebaseToken,
 		Topic:         Topic,
@@ -185,6 +188,12 @@ func MessageNotificationList(c echo.Context) error {
 func ClientMessageNotificationList(c echo.Context) error {
 	defer c.Request().Body.Close()
 
+	///get jti
+	user := c.Get("user")
+	token := user.(*jwt.Token)
+	claims := token.Claims.(jwt.MapClaims)
+	clientID, _ := strconv.Atoi(claims["jti"].(string))
+
 	// pagination parameters
 	rows, err := strconv.Atoi(c.QueryParam("rows"))
 	page, err := strconv.Atoi(c.QueryParam("page"))
@@ -193,7 +202,6 @@ func ClientMessageNotificationList(c echo.Context) error {
 
 	// filters
 	id, _ := strconv.Atoi(c.QueryParam("id"))
-	ClientID, _ := strconv.Atoi(c.QueryParam("client_id"))
 	Title := c.QueryParam("title")
 	FirebaseToken := c.QueryParam("token")
 	Topic := c.QueryParam("topic")
@@ -211,7 +219,7 @@ func ClientMessageNotificationList(c echo.Context) error {
 	notification := models.Notification{}
 	result, err := notification.PagedFilterSearch(page, rows, order, sort, &Filter{
 		ID:            id,
-		ClientID:      ClientID, //TODO id == jti
+		ClientID:      clientID, //DONE id == jti
 		Title:         Title,
 		FirebaseToken: FirebaseToken,
 		Topic:         Topic,
