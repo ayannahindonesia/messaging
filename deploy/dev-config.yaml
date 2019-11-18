@@ -4,7 +4,7 @@ development:
     table: asira_messaging
     username: asirauser
     password: asirapass
-    host: postgres_db
+    host: "127.0.0.1"
     port: "5432"
     maxlifetime: 30
     idle_conns: 10
@@ -12,6 +12,8 @@ development:
     sslmode: disable
     logmode: true
     timezone: Asia/Jakarta
+  push_notification: 
+    project_id: "asira-app-33ed7"
   partners:
     adsmedia:
       host_url: "https://sms241.xyz/sms/api_sms_masking_send_json.php"

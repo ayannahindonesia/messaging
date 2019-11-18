@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+//TODO: migration for notification
+
 func GetMessageSeedSuccess() (mod models.Messaging) {
 	layout := "2019-10-23 04:40:08.034983+00"
 	str := "2019-10-23 04:40:08.034983+00"
