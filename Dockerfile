@@ -9,11 +9,13 @@ WORKDIR $GOPATH/src/"${APPNAME}"
 RUN apk add --update git gcc libc-dev tzdata;
 #  tzdata wget gcc libc-dev make openssl py-pip;
 ENV TZ=Asia/Jakarta
+ENV GOOGLE_APPLICATION_CREDENTIALS=$GOPATH/src/"${APPNAME}"/google-services.json
 
 RUN go get -u github.com/golang/dep/cmd/dep
 
 CMD if [ "${ENV}" = "dev" ] ; then \
         cp deploy/dev-config.yaml config.yaml ; \
+        cp deploy/dev-google-services.json google-services.json ; \
     fi \
     && dep ensure -v \
     && go build -v -o $GOPATH/bin/"${APPNAME}" \
