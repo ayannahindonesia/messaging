@@ -101,6 +101,52 @@ func Seed() {
 			users.Create()
 		}
 
+		notifications := []models.Notification{
+			models.Notification{
+				ClientID:      2,
+				RecipientID:   "borrower-1",
+				Title:         "Status Peminjaman Anda",
+				MessageBody:   "Loan id 1 diterima oleh Bank A 2019-11-06",
+				FirebaseToken: "dtRiFA0U7tE:APA91bGURmGuJLLD0Y_PdhHvFj3haiq8jj8haAfaw94yH0j-Jj6TiGM4wzRHmoLUhihlXKLUF7iFAsAalXzrUVLEVbbtK57_wVYCu2jhameVoG13rc1HgIM6xanEMlApnuwSmURdcdz1",
+				Topic:         "promosi",
+				SendTime:      time.Now(),
+				Response:      "projects/asira-app-33ed7/messages/0:1573131084523969%2056f65bf9fd7ecd",
+			},
+			models.Notification{
+				ClientID:      2,
+				RecipientID:   "borrower-2",
+				Title:         "Status Peminjaman Anda",
+				MessageBody:   "Loan id 2 diterima oleh Bank B 2019-11-06",
+				FirebaseToken: "dtRiFA0U7tE:APA91bGURmGuJLLD0Y_PdhHvFj3haiq8jj8haAfaw94yH0j-Jj6TiGM4wzRHmoLUhihlXKLUF7iFAsAalXzrUVLEVbbtK57_wVYCu2jhameVoG13rc1HgIM6xanEMlApnuwSmURdcdz1",
+				Topic:         "promosi",
+				SendTime:      time.Now(),
+				Response:      "projects/asira-app-33ed7/messages/0:1573131084523969%2056f65bf9fd7ecd",
+			},
+			models.Notification{
+				ClientID:      2,
+				RecipientID:   "lender-1",
+				Title:         "Promosi",
+				MessageBody:   "Promosi Produk A...",
+				FirebaseToken: "dtRiFA0U7tE:APA91bGURmGuJLLD0Y_PdhHvFj3haiq8jj8haAfaw94yH0j-Jj6TiGM4wzRHmoLUhihlXKLUF7iFAsAalXzrUVLEVbbtK57_wVYCu2jhameVoG13rc1HgIM6xanEMlApnuwSmURdcdz1",
+				Topic:         "promosi",
+				SendTime:      time.Now(),
+				Response:      "projects/asira-app-33ed7/messages/0:1573131084523969%2056f65bf9fd7ecd",
+			},
+			models.Notification{
+				ClientID:      1,
+				RecipientID:   "admin-1",
+				Title:         "Info",
+				MessageBody:   "Info, informasi...",
+				FirebaseToken: "dtRiFA0U7tE:APA91bGURmGuJLLD0Y_PdhHvFj3haiq8jj8haAfaw94yH0j-Jj6TiGM4wzRHmoLUhihlXKLUF7iFAsAalXzrUVLEVbbtK57_wVYCu2jhameVoG13rc1HgIM6xanEMlApnuwSmURdcdz1",
+				Topic:         "promosi",
+				SendTime:      time.Now(),
+				Response:      "projects/asira-app-33ed7/messages/0:1573131084523969%2056f65bf9fd7ecd",
+			},
+		}
+		for _, notification := range notifications {
+			notification.Create()
+		}
+
 	}
 }
 
@@ -143,6 +189,53 @@ func TestSeed() {
 		// for _, users := range GetUsersSeed() {
 		// 	users.Create()
 		// }
+
+		notifications := []models.Notification{
+			models.Notification{
+				ClientID:      2,
+				RecipientID:   "borrower-1",
+				Title:         "Status Peminjaman Anda",
+				MessageBody:   "Loan id 1 diterima oleh Bank A 2019-11-06",
+				FirebaseToken: "dtRiFA0U7tE:APA91bGURmGuJLLD0Y_PdhHvFj3haiq8jj8haAfaw94yH0j-Jj6TiGM4wzRHmoLUhihlXKLUF7iFAsAalXzrUVLEVbbtK57_wVYCu2jhameVoG13rc1HgIM6xanEMlApnuwSmURdcdz1",
+				Topic:         "promosi",
+				SendTime:      time.Now(),
+				Response:      "projects/asira-app-33ed7/messages/0:1573131084523969%2056f65bf9fd7ecd",
+			},
+			models.Notification{
+				ClientID:      2,
+				RecipientID:   "borrower-2",
+				Title:         "Status Peminjaman Anda",
+				MessageBody:   "Loan id 2 diterima oleh Bank B 2019-11-06",
+				FirebaseToken: "dtRiFA0U7tE:APA91bGURmGuJLLD0Y_PdhHvFj3haiq8jj8haAfaw94yH0j-Jj6TiGM4wzRHmoLUhihlXKLUF7iFAsAalXzrUVLEVbbtK57_wVYCu2jhameVoG13rc1HgIM6xanEMlApnuwSmURdcdz1",
+				Topic:         "promosi",
+				SendTime:      time.Now(),
+				Response:      "projects/asira-app-33ed7/messages/0:1573131084523969%2056f65bf9fd7ecd",
+			},
+			models.Notification{
+				ClientID:      2,
+				RecipientID:   "lender-1",
+				Title:         "Promosi",
+				MessageBody:   "Promosi Produk A...",
+				FirebaseToken: "dtRiFA0U7tE:APA91bGURmGuJLLD0Y_PdhHvFj3haiq8jj8haAfaw94yH0j-Jj6TiGM4wzRHmoLUhihlXKLUF7iFAsAalXzrUVLEVbbtK57_wVYCu2jhameVoG13rc1HgIM6xanEMlApnuwSmURdcdz1",
+				Topic:         "promosi",
+				SendTime:      time.Now(),
+				Response:      "projects/asira-app-33ed7/messages/0:1573131084523969%2056f65bf9fd7ecd",
+			},
+			models.Notification{
+				ClientID:      1,
+				RecipientID:   "admin-1",
+				Title:         "Info",
+				MessageBody:   "Info, informasi...",
+				FirebaseToken: "dtRiFA0U7tE:APA91bGURmGuJLLD0Y_PdhHvFj3haiq8jj8haAfaw94yH0j-Jj6TiGM4wzRHmoLUhihlXKLUF7iFAsAalXzrUVLEVbbtK57_wVYCu2jhameVoG13rc1HgIM6xanEMlApnuwSmURdcdz1",
+				Topic:         "promosi",
+				SendTime:      time.Now(),
+				Response:      "projects/asira-app-33ed7/messages/0:1573131084523969%2056f65bf9fd7ecd",
+			},
+		}
+		for _, notification := range notifications {
+			notification.Create()
+		}
+
 	}
 }
 

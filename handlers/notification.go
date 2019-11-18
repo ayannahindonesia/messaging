@@ -20,6 +20,7 @@ import (
 
 type (
 	NotificationPayload struct {
+		RecipientID   string            `json:"recipient_id"`
 		Title         string            `json:"title"`
 		MessageBody   string            `json:"message_body"`
 		Data          map[string]string `json:"data"`
@@ -59,6 +60,7 @@ func MessageNotificationSend(c echo.Context) error {
 	notificationPayload := NotificationPayload{}
 	payloadRules := govalidator.MapData{
 		"title":        []string{"required"},
+		"recipient_id": []string{},
 		"message_body": []string{},
 		"data":         []string{},
 	}
@@ -74,6 +76,7 @@ func MessageNotificationSend(c echo.Context) error {
 
 	//assignment object
 	notification := models.Notification{}
+	notification.RecipientID = notificationPayload.RecipientID
 	notification.Title = notificationPayload.Title
 	notification.MessageBody = notificationPayload.MessageBody
 	notification.Topic = notificationPayload.Topic
@@ -152,31 +155,78 @@ func MessageNotificationList(c echo.Context) error {
 	// filters
 	id, _ := strconv.Atoi(c.QueryParam("id"))
 	ClientID, _ := strconv.Atoi(c.QueryParam("client_id"))
-	PhoneNumber := c.QueryParam("phone_number")
-	Message := c.QueryParam("message")
-	Partner := c.QueryParam("partner")
-	Status := c.QueryParam("status")
+	Title := c.QueryParam("title")
+	FirebaseToken := c.QueryParam("token")
+	Topic := c.QueryParam("topic")
 	layout := "2019-10-21T12:34:28.726458+07:00"
 	SendTime, _ := time.Parse(layout, c.QueryParam("send_time"))
 	type Filter struct {
-		ID          int       `json:"id"`
-		ClientID    int       `json:"client_id"`
-		PhoneNumber string    `json:"phone_number" condition:"LIKE"`
-		Message     string    `json:"message" condition:"LIKE"`
-		Partner     string    `json:"partner" condition:"LIKE"`
-		Status      string    `json:"status"`
-		SendTime    time.Time `json:"send_time"`
+		ID            int       `json:"id"`
+		ClientID      int       `json:"client_id"`
+		Title         string    `json:"title" condition:"LIKE"`
+		FirebaseToken string    `json:"firebase_token" condition:"LIKE"`
+		Topic         string    `json:"topic"`
+		SendTime      time.Time `json:"send_time"`
 	}
 
-	messaging := models.Messaging{}
-	result, err := messaging.PagedFilterSearch(page, rows, order, sort, &Filter{
-		ID:          id,
-		ClientID:    ClientID,
-		PhoneNumber: PhoneNumber,
-		Message:     Message,
-		Partner:     Partner,
-		Status:      Status,
-		SendTime:    SendTime,
+	notification := models.Notification{}
+	result, err := notification.PagedFilterSearch(page, rows, order, sort, &Filter{
+		ID:            id,
+		ClientID:      ClientID,
+		Title:         Title,
+		FirebaseToken: FirebaseToken,
+		Topic:         Topic,
+		SendTime:      SendTime,
+	})
+	if err != nil {
+		return returnInvalidResponse(http.StatusInternalServerError, err, "pencarian tidak ditemukan")
+	}
+
+	return c.JSON(http.StatusOK, result)
+}
+
+func ClientMessageNotificationList(c echo.Context) error {
+	defer c.Request().Body.Close()
+
+	///get jti
+	user := c.Get("user")
+	token := user.(*jwt.Token)
+	claims := token.Claims.(jwt.MapClaims)
+	clientID, _ := strconv.Atoi(claims["jti"].(string))
+
+	// pagination parameters
+	rows, err := strconv.Atoi(c.QueryParam("rows"))
+	page, err := strconv.Atoi(c.QueryParam("page"))
+	order := c.QueryParam("orderby")
+	sort := c.QueryParam("sort")
+
+	// filters
+	id, _ := strconv.Atoi(c.QueryParam("id"))
+	recipientID := c.QueryParam("recipient_id")
+	Title := c.QueryParam("title")
+	FirebaseToken := c.QueryParam("token")
+	Topic := c.QueryParam("topic")
+	layout := "2019-10-21T12:34:28.726458+07:00"
+	SendTime, _ := time.Parse(layout, c.QueryParam("send_time"))
+	type Filter struct {
+		ID            int       `json:"id"`
+		ClientID      int       `json:"client_id"`
+		RecipientID   string    `json:"recipient_id"` //NOTE : exact value
+		Title         string    `json:"title" condition:"LIKE"`
+		FirebaseToken string    `json:"firebase_token" condition:"LIKE"`
+		Topic         string    `json:"topic"`
+		SendTime      time.Time `json:"send_time"`
+	}
+
+	notification := models.Notification{}
+	result, err := notification.PagedFilterSearch(page, rows, order, sort, &Filter{
+		ID:            id,
+		ClientID:      clientID, //DONE id == jti
+		RecipientID:   recipientID,
+		Title:         Title,
+		FirebaseToken: FirebaseToken,
+		Topic:         Topic,
+		SendTime:      SendTime,
 	})
 	if err != nil {
 		return returnInvalidResponse(http.StatusInternalServerError, err, "pencarian tidak ditemukan")

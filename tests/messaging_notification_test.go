@@ -39,6 +39,7 @@ func TestMessageNotificationSend(t *testing.T) {
 	}
 
 	payload := map[string]interface{}{
+		"recipient_id":   "borrower-2312",
 		"title":          "Your Loan Applied has been Aproved",
 		"message_body":   "{\"status\":\"aproved\",\"product\":\"1276216\"}",
 		"firebase_token": "cEh41s_l_t4:APA91bGaE1OLrCN0P3myiSslwtddtmZMDj4uy_0YbJJ3qvt_N_f81HdxJL5juuuud18OW3zfKZqLDMbn83O1EoBBhGHvJMKupupb5CUsSaWc9A4b6bItmDEctwZ3F-5ENoJfHPZP4NMn",
@@ -58,50 +59,43 @@ func TestMessageNotificationSend(t *testing.T) {
 		Object()
 }
 
-// func TestMessageNotificationList(t *testing.T) {
-// 	RebuildData()
+func TestMessageNotificationList(t *testing.T) {
+	RebuildData()
 
-// 	api := router.NewRouter()
+	api := router.NewRouter()
 
-// 	server := httptest.NewServer(api)
+	server := httptest.NewServer(api)
 
-// 	defer server.Close()
+	defer server.Close()
 
-// 	e := httpexpect.New(t, server.URL)
+	e := httpexpect.New(t, server.URL)
 
-// 	auth := e.Builder(func(req *httpexpect.Request) {
-// 		req.WithHeader("Authorization", "Basic "+clientBasicToken)
-// 	})
+	auth := e.Builder(func(req *httpexpect.Request) {
+		req.WithHeader("Authorization", "Basic "+clientBasicToken)
+	})
 
-// 	clientToken := getAdminLoginToken(e, auth, "1")
+	clientToken := getAdminLoginToken(e, auth, "1")
 
-// 	auth = e.Builder(func(req *httpexpect.Request) {
-// 		req.WithHeader("Authorization", "Bearer "+clientToken)
-// 	})
+	auth = e.Builder(func(req *httpexpect.Request) {
+		req.WithHeader("Authorization", "Bearer "+clientToken)
+	})
 
-// 	// expect valid response
-// 	auth.GET("/admin/message_sms").
-// 		Expect().
-// 		Status(http.StatusOK).
-// 		JSON().
-// 		Object()
+	// expect valid response
+	obj := auth.GET("/admin/message_notification").
+		WithQuery("recipient_id", "borrower").
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+	obj.ContainsKey("data").NotEmpty()
 
-// 	obj := auth.GET("/admin/message_sms").
-// 		WithQuery("phone_number", "08").
-// 		Expect().
-// 		Status(http.StatusOK).
-// 		JSON().
-// 		Object()
-// 	obj.ContainsKey("data").NotEmpty()
-// 	//log.Printf("%+v", obj)
-
-// 	auth2 := e.Builder(func(req *httpexpect.Request) {
-// 		req.WithHeader("Authorization", "Bearer invalid")
-// 	})
-// 	auth2.GET("/admin/message_sms").
-// 		WithQuery("phone_number", "08").
-// 		Expect().
-// 		Status(http.StatusUnauthorized).
-// 		JSON().
-// 		Object()
-// }
+	auth2 := e.Builder(func(req *httpexpect.Request) {
+		req.WithHeader("Authorization", "Bearer invalid")
+	})
+	auth2.GET("/admin/message_notification").
+		WithQuery("token", "cEh").
+		Expect().
+		Status(http.StatusUnauthorized).
+		JSON().
+		Object()
+}
