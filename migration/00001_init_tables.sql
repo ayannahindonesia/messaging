@@ -27,6 +27,21 @@ CREATE TABLE "messagings" (
     PRIMARY KEY ("id")
 ) WITH (OIDS = FALSE);
 
+CREATE TABLE "notifications" (
+    "id" bigserial,
+    "client_id" bigserial,
+    "recipient_id" varchar(125),
+    "title" varchar(255) NOT NULL,
+    "message_body" text,
+    "firebase_token" varchar(255),
+    "topic" varchar(125),
+    "response" varchar(255),
+    "send_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
+    "created_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
+    "updated_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY ("id")
+) WITH (OIDS = FALSE);
+
 CREATE TABLE "users" (
     "id" bigserial,
     "username" varchar(255) UNIQUE,
@@ -42,3 +57,4 @@ CREATE TABLE "users" (
 DROP TABLE IF EXISTS "clients" CASCADE;
 DROP TABLE IF EXISTS "messagings" CASCADE;
 DROP TABLE IF EXISTS "users" CASCADE;
+DROP TABLE IF EXISTS "notifications" CASCADE;
