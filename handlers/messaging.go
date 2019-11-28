@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"messaging/models"
 	"messaging/partner"
@@ -31,13 +32,21 @@ func MessageOTPSend(c echo.Context) error {
 		return returnInvalidResponse(http.StatusUnprocessableEntity, validate, "validation error")
 	}
 
+	debugFlag, err := strconv.ParseBool(c.QueryParam("debug"))
+	if err != nil {
+		//force false, process keep running
+		debugFlag = false
+		fmt.Println("debug ==> ", debug)
+		return nil
+	}
+
 	//build otp request to partner
 	number := messaging.PhoneNumber
 	message := messaging.Message
 	//build request data
 	conf := partner.PrepareRequestData(number, message)
 	//send to API partner
-	response, err := partner.Send(conf)
+	response, err := partner.Send(conf, debugFlag)
 	if err != nil {
 		return returnInvalidResponse(http.StatusInternalServerError, err, "")
 	}

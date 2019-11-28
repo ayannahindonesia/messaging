@@ -3,6 +3,7 @@ package messaging
 import (
 	"fmt"
 	"log"
+	"messaging/messaging"
 	"messaging/validator"
 	"os"
 	"strings"
@@ -21,13 +22,14 @@ var (
 
 type (
 	Application struct {
-		Name    string        `json:"name"`
-		Port    string        `json:"port"`
-		Version string        `json:"version"`
-		ENV     string        `json:"env"`
-		Config  viper.Viper   `json:"prog_config"`
-		DB      *gorm.DB      `json:"db"`
-		Kafka   KafkaInstance `json:"kafka"`
+		Name      string        `json:"name"`
+		Port      string        `json:"port"`
+		Version   string        `json:"version"`
+		ENV       string        `json:"env"`
+		Config    viper.Viper   `json:"prog_config"`
+		DB        *gorm.DB      `json:"db"`
+		Kafka     KafkaInstance `json:"kafka"`
+		DebugMode bool          `json:"debug_mode"`
 	}
 
 	KafkaInstance struct {
@@ -52,6 +54,9 @@ func init() {
 	}
 
 	//App.KafkaInit()
+
+	//set global debug
+	App.DebugMode = App.Config.GetStringMap(fmt.Sprintf("%s.debug_mode", messaging.App.ENV))
 
 	// apply custom validator
 	v := validator.MessagingValidator{DB: App.DB}
