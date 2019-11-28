@@ -36,8 +36,7 @@ func MessageOTPSend(c echo.Context) error {
 	if err != nil {
 		//force false, process keep running
 		debugFlag = false
-		fmt.Println("debug ==> ", debug)
-		return nil
+		fmt.Println("debug ==> ", debugFlag)
 	}
 
 	//build otp request to partner

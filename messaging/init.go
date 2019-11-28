@@ -3,7 +3,6 @@ package messaging
 import (
 	"fmt"
 	"log"
-	"messaging/messaging"
 	"messaging/validator"
 	"os"
 	"strings"
@@ -56,7 +55,7 @@ func init() {
 	//App.KafkaInit()
 
 	//set global debug
-	App.DebugMode = App.Config.GetStringMap(fmt.Sprintf("%s.debug_mode", messaging.App.ENV))
+	App.DebugMode = App.Config.GetBool(fmt.Sprintf("%s.debug_mode", App.ENV))
 
 	// apply custom validator
 	v := validator.MessagingValidator{DB: App.DB}
