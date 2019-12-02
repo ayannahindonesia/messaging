@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	messaging_notif "messaging/messaging"
-	"messaging/models"
 	"net/http"
 	"strconv"
 	"time"
@@ -17,6 +16,20 @@ import (
 	"github.com/labstack/echo"
 	"github.com/thedevsaddam/govalidator"
 )
+
+//Notification hold response data
+type Notification struct {
+	ClientID    int    `json:"client_id"`
+	RecipientID string `json:"recipient_id"`
+	Title       string `json:"title"`
+	MessageBody string `json:"message_body"`
+	//TODO: to get from client device
+	FirebaseToken string            `json:"firebase_token"`
+	Topic         string            `json:"topic"`
+	Response      string            `json:"response"`
+	SendTime      time.Time         `json:"send_time"`
+	Data          map[string]string `json:"data"`
+}
 
 type (
 	NotificationPayload struct {
@@ -75,7 +88,7 @@ func MessageNotificationSend(c echo.Context) error {
 	}
 
 	//assignment object
-	notification := models.Notification{}
+	notification := Notification{}
 	notification.RecipientID = notificationPayload.RecipientID
 	notification.Title = notificationPayload.Title
 	notification.MessageBody = notificationPayload.MessageBody
@@ -128,13 +141,11 @@ func MessageNotificationSend(c echo.Context) error {
 		}
 	}
 
-	//storing
+	//set response
 	notification.ClientID = clientID
 	notification.Response = response
-	// err = notification.Create()
-	// if err != nil {
-	// 	return returnInvalidResponse(http.StatusInternalServerError, err, "Gagal menyimpan notifikasi")
-	// }
+	notification.Data = notificationPayload.Data
+
 	// Response is a message ID string.
 	log.Println("Successfully sent message: ", response, clientID)
 	elapsed := time.Since(start)
