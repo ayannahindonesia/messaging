@@ -53,6 +53,16 @@ func TestMessageOTPSend(t *testing.T) {
 		Status(http.StatusOK).
 		JSON().
 		Object()
+		//test query params debug = true
+	obj := auth.POST("/client/message_sms_send").
+		WithQuery("debug", true).
+		WithJSON(payload).
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+	obj.ContainsKey("status").ValueEqual("status", "success")
+	//test error
 	auth.POST("/client/message_sms_send").WithJSON(nil).
 		Expect().
 		Status(http.StatusUnprocessableEntity).
