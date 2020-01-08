@@ -63,6 +63,15 @@
   version = "v1.5.1"
 
 [[projects]]
+  branch = "use-gorm-model"
+  digest = "1:d40a8ca5c131ecde6e4124e3a00f2df6fbe28a80049ff281119a9ff0a58d0d59"
+  name = "github.com/ayannahindonesia/basemodel"
+  packages = ["."]
+  pruneopts = ""
+  revision = "ce2b4096181bbebb3ab703eeaef1f510c3528284"
+  source = "https://github.com/ayannahindonesia/basemodel.git"
+
+[[projects]]
   digest = "1:0deddd908b6b4b768cfc272c16ee61e7088a60f7fe2f06c547bd3d8e1f8b8e77"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
@@ -586,15 +595,6 @@
   revision = "ecda9a501e8220fae3b4b600c3db4b0ba22cfc68"
 
 [[projects]]
-  branch = "master"
-  digest = "1:b7538a142bd590a436bd46a3095abc88de7ead968ba372dc01a6ba9c8f54cedb"
-  name = "gitlab.com/asira-ayannah/basemodel"
-  packages = ["."]
-  pruneopts = ""
-  revision = "5c5a8bfdd5c5c8f1fbe9952dce9aab305aa1e988"
-  source = "https://asira:Uo9Jt_2rPGAzc7vzBri_@gitlab.com/asira-ayannah/basemodel.git"
-
-[[projects]]
   digest = "1:1967fb934ef747bf690fcc56487a06c46bf674bd91cb3381a78a7e4d5c2e1a82"
   name = "go.opencensus.io"
   packages = [
@@ -986,6 +986,7 @@
     "firebase.google.com/go",
     "firebase.google.com/go/messaging",
     "github.com/Shopify/sarama",
+    "github.com/ayannahindonesia/basemodel",
     "github.com/dgrijalva/jwt-go",
     "github.com/fsnotify/fsnotify",
     "github.com/gavv/httpexpect",
@@ -998,7 +999,6 @@
     "github.com/pressly/goose",
     "github.com/spf13/viper",
     "github.com/thedevsaddam/govalidator",
-    "gitlab.com/asira-ayannah/basemodel",
     "golang.org/x/crypto/bcrypt",
   ]
   solver-name = "gps-cdcl"
