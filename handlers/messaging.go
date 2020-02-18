@@ -76,7 +76,7 @@ func MessageOTPSend(c echo.Context) error {
 	}
 
 	if messaging.ErrorMessage != "" {
-		return returnInvalidResponse(http.StatusInternalServerError, err, "Internal Error : "+err.Error())
+		return returnInvalidResponse(http.StatusInternalServerError, err, "Gagal mengirim SMS")
 	}
 
 	log.Println(string(response))
