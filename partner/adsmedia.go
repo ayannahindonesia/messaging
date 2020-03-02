@@ -164,9 +164,17 @@ func GetStatusResponse(response []byte) (string, error) {
 	//res := responseObj["sending_respon"].(map[string]interface{})
 	//err = json.Unmarshal(responseObj["sending_respon"].([]byte), &res)
 	log.Printf("%+v", responseObj)
-	if responseObj.SendingRespon[0].DataPacket[0].Packet.SendingStatus != 10 {
-		log.Printf("%+v", responseObj)
-		return "failed", errors.New(responseObj.SendingRespon[0].DataPacket[0].Packet.SendingStatusText)
+
+	//cek global status success (10)
+	if responseObj.SendingRespon[0].GlobalStatus == 10 {
+		//cek sending status : 60, 70, 80, 90
+		if responseObj.SendingRespon[0].DataPacket[0].Packet.SendingStatus != 10 {
+			log.Printf("%+v", responseObj)
+			return "failed", errors.New(responseObj.SendingRespon[0].DataPacket[0].Packet.SendingStatusText)
+		}
+	} else {
+		//error status : 20, 30, 40, 50, 55
+		return "failed", errors.New(responseObj.SendingRespon[0].GlobalStatusText)
 	}
 
 	return status, nil
