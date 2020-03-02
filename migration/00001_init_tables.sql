@@ -7,8 +7,9 @@ CREATE TABLE "clients" (
     "key" varchar(255) NOT NULL,
     "role" varchar(255) NOT NULL,
     "secret" varchar(255) NOT NULL,
-    "created_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
-    "updated_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
+    "created_at" timestamptz DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" timestamptz,
     PRIMARY KEY ("id")
 ) WITH (OIDS = FALSE);
 
@@ -22,8 +23,9 @@ CREATE TABLE "messagings" (
     "message" varchar(153) NOT NULL,
     "raw_response" text NOT NULL,
     "send_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
-    "created_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
-    "updated_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
+    "created_at" timestamptz DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" timestamptz,
     PRIMARY KEY ("id")
 ) WITH (OIDS = FALSE);
 
@@ -31,8 +33,9 @@ CREATE TABLE "users" (
     "id" bigserial,
     "username" varchar(255) UNIQUE,
     "password" text NOT NULL,
-    "created_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
-    "updated_time" timestamptz DEFAULT CURRENT_TIMESTAMP,
+    "created_at" timestamptz DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" timestamptz,
     PRIMARY KEY ("id")
 ) WITH (OIDS = FALSE);
 

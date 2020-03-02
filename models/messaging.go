@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"gitlab.com/asira-ayannah/basemodel"
+	"github.com/ayannahindonesia/basemodel"
 )
 
 type (
@@ -40,7 +40,7 @@ func (u *Messaging) Save() error {
 	return err
 }
 
-func (u *Messaging) FindbyID(id int) error {
+func (u *Messaging) FindbyID(id uint64) error {
 	err := basemodel.FindbyID(&u, id)
 	return err
 }

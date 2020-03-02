@@ -1,4 +1,4 @@
 [[constraint]]
-    name= "gitlab.com/asira-ayannah/basemodel"
-    branch = "master"
-    source = "https://asira:Uo9Jt_2rPGAzc7vzBri_@gitlab.com/asira-ayannah/basemodel.git"
+    name= "github.com/ayannahindonesia/basemodel"
+    branch = "use-gorm-model"
+    source = "https://github.com/ayannahindonesia/basemodel.git"
