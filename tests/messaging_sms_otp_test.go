@@ -42,7 +42,7 @@ func TestMessageOTPSend(t *testing.T) {
 	}
 
 	payload := map[string]interface{}{
-		"phone_number": "082297335657",
+		"phone_number": "081234567890",
 		"message":      "Kode OTP Anda adalah 997823",
 	}
 
@@ -53,7 +53,8 @@ func TestMessageOTPSend(t *testing.T) {
 		Status(http.StatusOK).
 		JSON().
 		Object()
-		//test query params debug = true
+
+	//test query params debug = true
 	obj := auth.POST("/client/message_sms_send").
 		WithQuery("debug", true).
 		WithJSON(payload).
@@ -62,6 +63,7 @@ func TestMessageOTPSend(t *testing.T) {
 		JSON().
 		Object()
 	obj.ContainsKey("status").ValueEqual("status", "success")
+
 	//test error
 	auth.POST("/client/message_sms_send").WithJSON(nil).
 		Expect().

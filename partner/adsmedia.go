@@ -10,6 +10,7 @@ import (
 	"log"
 	"messaging/messaging"
 	"net/http"
+	"os"
 
 	"github.com/jarcoal/httpmock"
 )
@@ -58,20 +59,11 @@ type ResponseType struct {
 //const URLendpoint string = "http://sms241.xyz/sms/api_sms_otp_send_json.php" // mahal
 //const URLendpoint string = "http://sms241.xyz/sms/api_sms_masking_send_json.php" //agak mahal
 
+//Send SMS to partner API
 func Send(con Config, debugFlag bool) (body []byte, err error) {
 	//format data tuk testing dan juga debugFlag == true
-	dummyData := `{
-		"id": 5,
-		"created_time": "2019-10-21T12:34:28.726458+07:00",
-		"updated_time": "2019-10-21T12:34:28.726458+07:00",
-		"client_id": 2,
-		"phone_number": "%s",
-		"message": "%s",
-		"partner": "adsmedia",
-		"raw_response": "{\"sending_respon\":[{\"globalstatus\":10,\"globalstatustext\":\"Success\",\"datapacket\":[{\"packet\":{\"number\":\"6282297335657\",\"sendingid\":1287265,\"sendingstatus\":10,\"sendingstatustext\":\"success\",\"price\":320}}]}]}",
-		"status": "success",
-		"send_time": "2019-10-21T12:34:28.726458+07:00"
-	}`
+	dummyData := `{"sending_respon":[{"globalstatus":10,"globalstatustext":"Success","datapacket":[{"packet":{"number":"%s","sendingid":1665027,"sendingstatus":10,"sendingstatustext":"success","price":340}}]}]}`
+
 	//paksa ambil dari query param (debugFlag)
 	messaging.App.DebugMode = debugFlag
 
@@ -90,10 +82,12 @@ func Send(con Config, debugFlag bool) (body []byte, err error) {
 					return httpmock.NewStringResponse(http.StatusInternalServerError, ""), nil
 				}
 
-				result := fmt.Sprintf(dummyData, PayloadSmsOTP["phone_number"], PayloadSmsOTP["message"])
-				fmt.Println(result)
+				phone := PayloadSmsOTP["datapacket"].([]interface{})[0].(map[string]interface{})["number"]
+				result := fmt.Sprintf(dummyData, phone)
+				var res ResponseType
+				json.Unmarshal([]byte(result), &res)
 
-				resp, err := httpmock.NewJsonResponse(http.StatusOK, result)
+				resp, err := httpmock.NewJsonResponse(http.StatusOK, res)
 				if err != nil {
 					return httpmock.NewStringResponse(http.StatusInternalServerError, err.Error()), nil
 				}
@@ -120,7 +114,7 @@ func Send(con Config, debugFlag bool) (body []byte, err error) {
 		if err != nil {
 			return nil, err
 		}
-		log.Println(string(body))
+		fmt.Fprintln(os.Stderr, "result : ", string(body))
 	} else {
 		//debugFlag == true
 		body = []byte(fmt.Sprintf(dummyData, "081234567890", payload))
@@ -157,16 +151,26 @@ func GetStatusResponse(response []byte) (string, error) {
 
 	//parsing json
 	err := json.Unmarshal(response, &responseObj)
+	fmt.Fprintf(os.Stderr, "response %+v : %+v \n", response, responseObj)
 	if err != nil {
+		fmt.Fprintf(os.Stderr, "err  %+v \n", err)
 		return "Invalid Number", err
 	}
 
 	//res := responseObj["sending_respon"].(map[string]interface{})
 	//err = json.Unmarshal(responseObj["sending_respon"].([]byte), &res)
 	log.Printf("%+v", responseObj)
-	if responseObj.SendingRespon[0].DataPacket[0].Packet.SendingStatus != 10 {
-		log.Printf("%+v", responseObj)
-		return "failed", errors.New(responseObj.SendingRespon[0].DataPacket[0].Packet.SendingStatusText)
+
+	//cek global status success (10)
+	if responseObj.SendingRespon[0].GlobalStatus == 10 {
+		//cek sending status : 60, 70, 80, 90
+		if responseObj.SendingRespon[0].DataPacket[0].Packet.SendingStatus != 10 {
+			log.Printf("%+v", responseObj)
+			return "failed", errors.New(responseObj.SendingRespon[0].DataPacket[0].Packet.SendingStatusText)
+		}
+	} else {
+		//error status : 20, 30, 40, 50, 55
+		return "failed", errors.New(responseObj.SendingRespon[0].GlobalStatusText)
 	}
 
 	return status, nil
