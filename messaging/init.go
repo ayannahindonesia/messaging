@@ -8,11 +8,11 @@ import (
 	"strings"
 
 	"github.com/Shopify/sarama"
+	"github.com/ayannahindonesia/basemodel"
 	"github.com/fsnotify/fsnotify"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/spf13/viper"
-	"gitlab.com/asira-ayannah/basemodel"
 )
 
 var (

@@ -52,11 +52,7 @@ func MessageOTPSend(c echo.Context) error {
 
 	//get response from parsing json API partner
 	status, err := partner.GetStatusResponse(response)
-	/*
-		if err != nil {
-			return returnInvalidResponse(http.StatusInternalServerError, err, "Internal Error : "+err.Error())
-		}
-	*/
+
 	//TODO: check return value from API Partner
 	messaging.Status = status
 	//error message
@@ -78,6 +74,11 @@ func MessageOTPSend(c echo.Context) error {
 	if err != nil {
 		return returnInvalidResponse(http.StatusInternalServerError, err, "Gagal menyimpan pesan OTP")
 	}
+
+	if messaging.ErrorMessage != "" {
+		return returnInvalidResponse(http.StatusInternalServerError, err, "Gagal mengirim SMS")
+	}
+
 	log.Println(string(response))
 	return c.JSON(http.StatusOK, messaging)
 }
